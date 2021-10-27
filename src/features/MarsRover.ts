@@ -2,7 +2,7 @@ import {Grid} from "./Grid";
 import {Coordinates, DirectionType} from "./Coordinates";
 
 export interface IMarsRover {
-    move(command: string): string;
+    execute(command: string): string;
 }
 
 export interface IMarsRoverConstructor {
@@ -18,7 +18,7 @@ export enum CommandType {
 export const MarsRover: IMarsRoverConstructor = class implements IMarsRover {
     private coordinates = new Coordinates("0:0:N");
     constructor(private readonly grid: Grid) {}
-    move(commands: string | CommandType[]): string {
+    execute(commands: string | CommandType[]): string {
         if (!commands) {
             throw new Error("Command/s is not valid!");
         }
