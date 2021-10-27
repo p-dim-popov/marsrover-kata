@@ -24,13 +24,13 @@ export class Coordinates {
 
         const [row, col, direction] = coords.split(":");
 
-        if (!row || !col || !direction) {
-            throw new Error("Not valid coordinates!")
-        }
-
         this.row = +row;
         this.col = +col;
         this.direction = direction;
+
+        if (!this.row || !this.col || !this.direction) {
+            throw new Error("Not valid coordinates!")
+        }
     }
 
     static parse(coords: string): Coordinates {
