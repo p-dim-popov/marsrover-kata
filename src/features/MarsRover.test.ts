@@ -1,13 +1,9 @@
-import { IMarsRover } from "./MarsRover";
+import MarsRover, {Grid} from "./MarsRover";
 
 describe("MarsRover", () => {
-    let marsRover: IMarsRover;
-    beforeEach(() => {
-        marsRover = {move: () => ""} as unknown as IMarsRover;
-    })
-
     describe("move", () => {
         it('should return string', function () {
+            const marsRover = new MarsRover(new Grid(10));
             expect(marsRover.move("")).toEqual("");
         });
     })

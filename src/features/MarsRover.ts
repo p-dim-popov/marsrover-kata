@@ -7,6 +7,18 @@ export class Grid {
 }
 
 export interface IMarsRover {
-    new(grid: Grid): this;
     move(command: string): string;
 }
+
+export interface IMarsRoverConstructor {
+    new(grid: Grid): IMarsRover;
+}
+
+export const MarsRover: IMarsRoverConstructor = class implements IMarsRover {
+    constructor(private readonly grid: Grid) {}
+    move(command: string): string {
+        return "";
+    }
+}
+
+export default MarsRover;
