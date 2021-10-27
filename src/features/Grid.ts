@@ -16,4 +16,7 @@ export class Grid {
             this.obstacles = cols;
         }
     }
+
+    hasObstacleOnPoint = (desiredPoint: Point) => this.obstacles
+        .some(point => point.x === desiredPoint.x && point.y === desiredPoint.y)
 }

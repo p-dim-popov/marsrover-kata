@@ -1,5 +1,6 @@
 import {Grid} from "./Grid";
 import {Coordinates, DIRECTIONS_ORDER, DirectionType} from "./Coordinates";
+import {Point} from "./Point";
 
 export enum CommandType {
     Move = "M",
@@ -17,7 +18,9 @@ export interface IMarsRoverConstructor {
 
 export const MarsRover: IMarsRoverConstructor = class implements IMarsRover {
     private coordinates = new Coordinates("0:0:N");
+
     constructor(private readonly grid: Grid) {}
+
     execute(commands: string | CommandType[]): string {
         if (!commands) {
             throw new Error("Command/s is not valid!");
@@ -29,38 +32,38 @@ export const MarsRover: IMarsRoverConstructor = class implements IMarsRover {
                 case CommandType.Move:
                     switch (this.coordinates.direction) {
                         case DirectionType.East: {
-                            const desired = (this.coordinates.position.x + 1) % this.grid.cols;
-                            if (this.grid.obstacles.every(point => point.x !== desired || point.y !== this.coordinates.position.y)) {
-                                this.coordinates.position.x = desired;
-                            } else {
+                            const desiredX = (this.coordinates.position.x + 1) % this.grid.cols;
+                            if (this.grid.hasObstacleOnPoint(new Point(desiredX, this.coordinates.position.y))) {
                                 this.coordinates.hasObstacles = true;
+                            } else {
+                                this.coordinates.position.x = desiredX;
                             }
                             break;
                         }
                         case DirectionType.West: {
-                            const desired = (!this.coordinates.position.x ? this.grid.cols : this.coordinates.position.x) - 1;
-                            if (this.grid.obstacles.every(point => point.x !== desired || point.y !== this.coordinates.position.y)) {
-                                this.coordinates.position.x = desired;
-                            } else {
+                            const desiredX = (!this.coordinates.position.x ? this.grid.cols : this.coordinates.position.x) - 1;
+                            if (this.grid.hasObstacleOnPoint(new Point(desiredX, this.coordinates.position.y))) {
                                 this.coordinates.hasObstacles = true;
+                            } else {
+                                this.coordinates.position.x = desiredX;
                             }
                             break;
                         }
                         case DirectionType.North: {
-                            const desired = (this.coordinates.position.y + 1) % this.grid.rows;
-                            if (this.grid.obstacles.every(point => point.y !== desired || point.x !== this.coordinates.position.x)) {
-                                this.coordinates.position.y = desired;
-                            } else {
+                            const desiredY = (this.coordinates.position.y + 1) % this.grid.rows;
+                            if (this.grid.hasObstacleOnPoint(new Point(this.coordinates.position.x, desiredY))) {
                                 this.coordinates.hasObstacles = true;
+                            } else {
+                                this.coordinates.position.y = desiredY;
                             }
                             break;
                         }
                         case DirectionType.South: {
-                            const desired = (!this.coordinates.position.y ? this.grid.rows : this.coordinates.position.y) - 1;
-                            if (this.grid.obstacles.every(point => point.y !== desired || point.x !== this.coordinates.position.x)) {
-                                this.coordinates.position.y = desired;
-                            } else {
+                            const desiredY = (!this.coordinates.position.y ? this.grid.rows : this.coordinates.position.y) - 1;
+                            if (this.grid.hasObstacleOnPoint(new Point(this.coordinates.position.x, desiredY))) {
                                 this.coordinates.hasObstacles = true;
+                            } else {
+                                this.coordinates.position.y = desiredY;
                             }
                             break;
                         }
