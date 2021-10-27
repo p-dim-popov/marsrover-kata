@@ -6,6 +6,29 @@ export class Grid {
     }
 }
 
+export class Coordinates {
+    row = 0;
+    col = 0;
+    hasObstacles = false;
+
+    constructor(coords: string) {
+        if (!coords) {
+            throw new Error("Not valid coordinates!")
+        }
+
+        if (coords.startsWith("O:")) {
+            this.hasObstacles = true;
+            coords = coords.replace("O:", "");
+        }
+
+
+    }
+
+    static parse(coords: string): Coordinates {
+        return new Coordinates(coords);
+    }
+}
+
 export interface IMarsRover {
     move(command: string): string;
 }
