@@ -13,6 +13,10 @@ export const MarsRover: IMarsRoverConstructor = class implements IMarsRover {
     private coordinates = new Coordinates("0:0:N");
     constructor(private readonly grid: Grid) {}
     move(command: string): string {
+        if (!command) {
+            throw new Error("Command is not valid!");
+        }
+
         return this.coordinates.toString();
     }
 }
