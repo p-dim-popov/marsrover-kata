@@ -18,6 +18,7 @@ describe("MarsRover", () => {
 
         it.each([
             ["M", "1:0:N"],
+            ["MMM", "3:0:N"],
         ])('should work as expected', function (commands: string, expectedCoordinates) {
             const marsRover = new MarsRover(basicGrid);
             expect(marsRover.move(commands)).toEqual(expectedCoordinates);

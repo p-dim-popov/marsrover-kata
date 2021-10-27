@@ -20,7 +20,7 @@ export const MarsRover: IMarsRoverConstructor = class implements IMarsRover {
     constructor(private readonly grid: Grid) {}
     move(commands: string | CommandType[]): string {
         if (!commands) {
-            throw new Error("Command is not valid!");
+            throw new Error("Command/s is not valid!");
         }
 
         for (const _ of typeof commands === "string" ? commands.split(""): commands) {
