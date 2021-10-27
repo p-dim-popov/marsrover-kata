@@ -8,6 +8,8 @@ export enum DirectionType {
     South = "S",
 }
 
+export const DIRECTIONS_ORDER = [DirectionType.East, DirectionType.South, DirectionType.West, DirectionType.North];
+
 export interface ICoordinates {
     position: Point;
     direction: DirectionType;
