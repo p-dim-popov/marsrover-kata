@@ -45,6 +45,7 @@ export const MarsRover: IMarsRoverConstructor = class implements IMarsRover {
                     }
                     break;
                 case CommandType.RotateRight:
+                    this.coordinates.direction = DIRECTIONS_ORDER[(DIRECTIONS_ORDER.indexOf(this.coordinates.direction) + 1) % DIRECTIONS_ORDER.length];
                     break;
                 case CommandType.RotateLeft:
                     this.coordinates.direction = DIRECTIONS_ORDER[Math.abs(DIRECTIONS_ORDER.indexOf(this.coordinates.direction) - 1) % DIRECTIONS_ORDER.length];
