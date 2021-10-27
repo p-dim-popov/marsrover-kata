@@ -28,18 +28,42 @@ export const MarsRover: IMarsRoverConstructor = class implements IMarsRover {
             switch (command) {
                 case CommandType.Move:
                     switch (this.coordinates.direction) {
-                        case DirectionType.East:
-                            this.coordinates.position.x = (this.coordinates.position.x + 1) % this.grid.cols;
+                        case DirectionType.East: {
+                            const desired = (this.coordinates.position.x + 1) % this.grid.cols;
+                            if (this.grid.obstacles.every(point => point.x !== desired || point.y !== this.coordinates.position.y)) {
+                                this.coordinates.position.x = desired;
+                            } else {
+                                this.coordinates.hasObstacles = true;
+                            }
                             break;
-                        case DirectionType.West:
-                            this.coordinates.position.x = (!this.coordinates.position.x ? this.grid.cols : this.coordinates.position.x) - 1;
+                        }
+                        case DirectionType.West: {
+                            const desired = (!this.coordinates.position.x ? this.grid.cols : this.coordinates.position.x) - 1;
+                            if (this.grid.obstacles.every(point => point.x !== desired || point.y !== this.coordinates.position.y)) {
+                                this.coordinates.position.x = desired;
+                            } else {
+                                this.coordinates.hasObstacles = true;
+                            }
                             break;
-                        case DirectionType.North:
-                            this.coordinates.position.y = (this.coordinates.position.y + 1) % this.grid.rows;
+                        }
+                        case DirectionType.North: {
+                            const desired = (this.coordinates.position.y + 1) % this.grid.rows;
+                            if (this.grid.obstacles.every(point => point.y !== desired || point.x !== this.coordinates.position.x)) {
+                                this.coordinates.position.y = desired;
+                            } else {
+                                this.coordinates.hasObstacles = true;
+                            }
                             break;
-                        case DirectionType.South:
-                            this.coordinates.position.y = (!this.coordinates.position.y ? this.grid.rows : this.coordinates.position.y) - 1;
+                        }
+                        case DirectionType.South: {
+                            const desired = (!this.coordinates.position.y ? this.grid.rows : this.coordinates.position.y) - 1;
+                            if (this.grid.obstacles.every(point => point.y !== desired || point.x !== this.coordinates.position.x)) {
+                                this.coordinates.position.y = desired;
+                            } else {
+                                this.coordinates.hasObstacles = true;
+                            }
                             break;
+                        }
                         default:
                             throw new Error("Unknown direction!")
                     }
