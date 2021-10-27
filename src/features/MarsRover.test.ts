@@ -21,9 +21,9 @@ export const stringifyCoordinates = (row?: number, col?: number, direction?: str
 describe("MarsRover", () => {
     describe("MarsRover", () => {
         describe("move", () => {
-            it("should return string", function () {
+            it("should return valid coordinates", function () {
                 const marsRover = new MarsRover(new Grid(10));
-                expect(marsRover.move("")).toEqual("");
+                expect(() => Coordinates.parse(marsRover.move(""))).not.toThrow();
             });
         })
     })
@@ -31,6 +31,7 @@ describe("MarsRover", () => {
     describe("Coordinates", () => {
         describe("parse", () => {
             it.each([
+                [0, 0, "N", false],
                 [1, 2, "N", false],
                 [1, 2, "N", true],
             ])("should parse (%s:%s:%s), with obstacles - %s", function (row: number, col: number, direction: string, hasObstacles: boolean) {
