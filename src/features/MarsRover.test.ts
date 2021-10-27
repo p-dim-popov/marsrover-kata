@@ -1,4 +1,4 @@
-import MarsRover from "./MarsRover";
+import MarsRover, {CommandType} from "./MarsRover";
 import {Grid} from "./Grid";
 import {Coordinates} from "./Coordinates";
 
@@ -19,7 +19,8 @@ describe("MarsRover", () => {
         it.each([
             ["M", "1:0:N"],
             ["MMM", "3:0:N"],
-        ])('should move as expected (%s) -> (%s)', function (commands: string, expectedCoordinates) {
+            [[CommandType.Move, CommandType.Move], "2:0:N"]
+        ])('should move as expected (%s) -> (%s)', function (commands: string | CommandType[], expectedCoordinates) {
             const marsRover = new MarsRover(basicGrid);
             expect(marsRover.execute(commands)).toEqual(expectedCoordinates);
         });

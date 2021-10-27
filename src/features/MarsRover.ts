@@ -1,18 +1,18 @@
 import {Grid} from "./Grid";
 import {Coordinates, DirectionType} from "./Coordinates";
 
-export interface IMarsRover {
-    execute(command: string): string;
-}
-
-export interface IMarsRoverConstructor {
-    new(grid: Grid): IMarsRover;
-}
-
 export enum CommandType {
     Move = "M",
     RotateLeft = "L",
     RotateRight = "R",
+}
+
+export interface IMarsRover {
+    execute(command: string | CommandType[]): string;
+}
+
+export interface IMarsRoverConstructor {
+    new(grid: Grid): IMarsRover;
 }
 
 export const MarsRover: IMarsRoverConstructor = class implements IMarsRover {
