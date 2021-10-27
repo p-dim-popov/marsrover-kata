@@ -1,4 +1,5 @@
 import {isNullNanUndefinedOrEmptyString} from "./utils";
+import {Point} from "./Point";
 
 export enum DirectionType {
     East = "E",
@@ -8,8 +9,7 @@ export enum DirectionType {
 }
 
 export interface ICoordinates {
-    row: number;
-    col: number;
+    position: Point;
     direction: DirectionType;
     hasObstacles: boolean;
     toString(): string;
@@ -17,32 +17,27 @@ export interface ICoordinates {
 
 export interface ICoordinatesConstructor {
     new(coords: string): ICoordinates;
-    new(row: number, col: number, direction: string, hasObstacles?: boolean): ICoordinates;
+    new(position: Point, direction: string, hasObstacles?: boolean): ICoordinates;
 
     parse(coords: string): ICoordinates;
 }
 
 export const Coordinates: ICoordinatesConstructor = class Coordinates implements ICoordinates {
-    row = 0;
-    col = 0;
+    readonly position: Point;
     direction: DirectionType = DirectionType.North;
     hasObstacles = false;
 
-    constructor(row: string | number, col: number, direction: DirectionType, hasObstacles: boolean = false) {
-        if (typeof row === "string") {
+    constructor(position: string | Point, direction: DirectionType, hasObstacles: boolean = false) {
+        if (typeof position === "string") {
             // TODO: implement clone
-            const data = Coordinates.parse(row);
-            this.row = data.row;
-            this.col = data.col;
+            const data = Coordinates.parse(position);
+            this.position = new Point(data.position.x, data.position.y);
             this.direction = data.direction;
             this.hasObstacles = data.hasObstacles;
-        } else if (typeof row === "number") {
-            this.row = row;
-            this.col = col;
+        } else {
+            this.position = new Point(position.x, position.y);
             this.direction = direction;
             this.hasObstacles = hasObstacles;
-        } else {
-            throw new Error("Not valid coordinates!")
         }
     }
 
@@ -69,11 +64,11 @@ export const Coordinates: ICoordinatesConstructor = class Coordinates implements
             throw new Error("Not valid coordinates!")
         }
 
-        return new Coordinates(row, col, direction, hasObstacles);
+        return new Coordinates(new Point(row, col), direction, hasObstacles);
     }
 
     toString(): string {
-        let result = `${this.row}:${this.col}:${this.direction}`
+        let result = `${this.position.x}:${this.position.y}:${this.direction}`
 
         if (this.hasObstacles) {
             result = "O:" + result;

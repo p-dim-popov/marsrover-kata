@@ -30,11 +30,11 @@ export const MarsRover: IMarsRoverConstructor = class implements IMarsRover {
                     switch (this.coordinates.direction) {
                         case DirectionType.East:
                         case DirectionType.West:
-                            this.coordinates.col = (this.coordinates.col + 1) % this.grid.cols;
+                            this.coordinates.position.y = (this.coordinates.position.y + 1) % this.grid.cols;
                             break;
                         case DirectionType.North:
                         case DirectionType.South:
-                            this.coordinates.row = (this.coordinates.row + 1) % this.grid.rows;
+                            this.coordinates.position.x = (this.coordinates.position.x + 1) % this.grid.rows;
                             break;
                         default:
                             throw new Error("Unknown direction!")

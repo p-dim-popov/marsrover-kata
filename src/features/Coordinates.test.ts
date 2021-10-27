@@ -11,8 +11,8 @@ describe("Coordinates", () => {
             const stringCoordinates = stringifyCoordinates(row, col, direction, hasObstacles);
             const coordinates = Coordinates.parse(stringCoordinates);
             expect(coordinates.hasObstacles).toEqual(hasObstacles);
-            expect(coordinates.row).toEqual(row);
-            expect(coordinates.col).toEqual(col);
+            expect(coordinates.position.x).toEqual(row);
+            expect(coordinates.position.y).toEqual(col);
         });
 
         it.each([
