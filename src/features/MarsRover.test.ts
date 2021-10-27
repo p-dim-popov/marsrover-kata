@@ -13,11 +13,14 @@ describe("MarsRover", () => {
     describe("Coordinates", () => {
         describe("parse", () => {
             it.each([
-                ["0:0:N", false],
-                ["O:0:0:N", true],
-            ])("should parse (%s)", function (coords: string, hasObstacles: boolean) {
-                const coordinates = Coordinates.parse(coords);
+                [1, 2, "N", false],
+                [1, 2, "N", true],
+            ])("should parse (%s:%s:%s), with obstacles - %s", function (row: number, col: number, direction: string, hasObstacles: boolean) {
+                const stringCoordinates = `${hasObstacles ? "O:" : ""}${row}:${col}:${direction}`;
+                const coordinates = Coordinates.parse(stringCoordinates);
                 expect(coordinates.hasObstacles).toEqual(hasObstacles);
+                expect(coordinates.row).toEqual(row);
+                expect(coordinates.col).toEqual(col);
             });
         })
     })

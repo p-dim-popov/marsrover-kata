@@ -9,6 +9,7 @@ export class Grid {
 export class Coordinates {
     row = 0;
     col = 0;
+    direction: string;
     hasObstacles = false;
 
     constructor(coords: string) {
@@ -21,7 +22,15 @@ export class Coordinates {
             coords = coords.replace("O:", "");
         }
 
+        const [row, col, direction] = coords.split(":");
 
+        if (!row || !col || !direction) {
+            throw new Error("Not valid coordinates!")
+        }
+
+        this.row = +row;
+        this.col = +col;
+        this.direction = direction;
     }
 
     static parse(coords: string): Coordinates {
