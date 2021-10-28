@@ -1,7 +1,7 @@
 import MarsRover, {CommandType} from "./MarsRover";
-import {Grid} from "./Grid";
-import {Coordinates} from "./Coordinates";
-import {Point} from "./Point";
+import {Grid} from "../Grid/Grid";
+import {Coordinates} from "../Coordinates/Coordinates";
+import {Point} from "../Point";
 
 const grid = new Grid(10, [ new Point(1, 3) ]);
 

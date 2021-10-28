@@ -1,5 +1,5 @@
 import {Coordinates} from "./Coordinates";
-import {stringifyCoordinates} from "./utils";
+import {stringifyCoordinates} from "../utils";
 
 describe("Coordinates", () => {
     describe("parse", () => {

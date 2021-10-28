@@ -1,5 +1,5 @@
-import {isNullNanUndefinedOrEmptyString} from "./utils";
-import {Point} from "./Point";
+import {isNullNanUndefinedOrEmptyString} from "../utils";
+import {Point} from "../Point";
 
 export enum DirectionType {
     East = "E",

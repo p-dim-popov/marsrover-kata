@@ -1,6 +1,6 @@
-import {Grid} from "./Grid";
-import {Coordinates, DIRECTIONS_ORDER, DirectionType} from "./Coordinates";
-import {Point} from "./Point";
+import {Grid} from "../Grid/Grid";
+import {Coordinates, DIRECTIONS_ORDER, DirectionType} from "../Coordinates/Coordinates";
+import {Point} from "../Point";
 
 export enum CommandType {
     Move = "M",
