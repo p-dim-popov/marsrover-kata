@@ -5,6 +5,8 @@ import {Point} from "../../features/Point";
 import {BoxType} from "../Box/Box";
 
 describe("Board", () => {
+    const gridWithObstacle = new Grid(5, 6, [ new Point(2, 3), new Point(3, 4)]);
+
     it.each([
         [ new Grid(5) ],
         [ new Grid(5, 6) ],
@@ -43,8 +45,6 @@ describe("Board", () => {
     });
 
     describe("movement", () => {
-        const gridWithObstacle = new Grid(5, 6, [ new Point(2, 3), new Point(3, 4)]);
-
         it('should move', function () {
             const screen = render(<Board grid={gridWithObstacle} />);
 
@@ -92,6 +92,35 @@ describe("Board", () => {
 
             expect(roverElement?.dataset.testid).toEqual(expected);
         });
+    });
 
-    })
+    it("should show if blocked by obstacle", function () {
+        const screen = render(<Board grid={gridWithObstacle} />);
+
+        fireEvent.keyDown(window, { key: ControlType.Move });
+        fireEvent.keyDown(window, { key: ControlType.Move });
+        fireEvent.keyDown(window, { key: ControlType.Move });
+        fireEvent.keyDown(window, { key: ControlType.RotateRight });
+        fireEvent.keyDown(window, { key: ControlType.Move });
+        fireEvent.keyDown(window, { key: ControlType.Move });
+        fireEvent.keyDown(window, { key: ControlType.Move });
+
+        const alertElement = screen.queryByText("BLOCKED BY OBSTACLE!");
+        expect(alertElement).toBeInTheDocument();
+    });
+
+    it("should not show if was blocked by obstacle and now is not", function () {
+        const screen = render(<Board grid={gridWithObstacle} />);
+
+        fireEvent.keyDown(window, { key: ControlType.Move });
+        fireEvent.keyDown(window, { key: ControlType.Move });
+        fireEvent.keyDown(window, { key: ControlType.Move });
+        fireEvent.keyDown(window, { key: ControlType.RotateRight });
+        fireEvent.keyDown(window, { key: ControlType.Move });
+        fireEvent.keyDown(window, { key: ControlType.RotateRight });
+        fireEvent.keyDown(window, { key: ControlType.Move });
+
+        const alertElement = screen.queryByText("BLOCKED BY OBSTACLE!");
+        expect(alertElement).not.toBeInTheDocument();
+    });
 })
