@@ -123,4 +123,15 @@ describe("Board", () => {
         const alertElement = screen.queryByText("BLOCKED BY OBSTACLE!");
         expect(alertElement).not.toBeInTheDocument();
     });
+
+    it.each([
+        [[ControlType.Move, ControlType.Move]],
+    ])('should show trail', function (commands: ControlType[]) {
+        const screen = render(<Board grid={new Grid(5)} />);
+
+        commands.forEach(c => fireEvent.keyDown(window, { key: c }));
+
+        const visitedBoxes = screen.queryAllByText(BoxType.Visited);
+        expect(visitedBoxes.length).toBeGreaterThan(0)
+    });
 })

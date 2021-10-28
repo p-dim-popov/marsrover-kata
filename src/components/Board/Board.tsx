@@ -16,14 +16,14 @@ export enum ControlType {
 
 const Board: React.FC<IBoardProps> = (props) => {
     const rover = useRef(new MarsRover(props.grid));
-    const [visitedPoints, setVisitedPoints] = useState<Point[]>([rover.current.coordinates.position]);
+    const [visitedPoints, setVisitedPoints] = useState<Point[]>([new Point(rover.current.coordinates.position.x, rover.current.coordinates.position.y)]);
 
     useEffect(() => {
         const onKeyDown = (event: KeyboardEvent) => {
             switch (event.key as ControlType) {
                 case ControlType.Move:
                     rover.current.execute([CommandType.Move]);
-                    setVisitedPoints([...visitedPoints, rover.current.coordinates.position]);
+                    setVisitedPoints([...visitedPoints, new Point(rover.current.coordinates.position.x, rover.current.coordinates.position.y)]);
                     break;
                 case ControlType.RotateLeft:
                     rover.current.execute([CommandType.RotateLeft]);
@@ -39,22 +39,31 @@ const Board: React.FC<IBoardProps> = (props) => {
         return () => {
             window.removeEventListener("keydown", onKeyDown)
         }
-    }, [visitedPoints])
+    }, [visitedPoints]);
+
+    const getType = (currentPoint: Point) => {
+        if (props.grid.hasObstacleOnPoint(currentPoint)) {
+            return BoxType.Obstacle;
+        }
+
+        if (rover.current.coordinates.position.equals(currentPoint)) {
+            return BoxType.Rover;
+        }
+
+        if (visitedPoints.some(point => point.equals(currentPoint))) {
+            return BoxType.Visited;
+        }
+
+        return BoxType.NotVisited;
+    }
 
     const rows = Array(props.grid.cols).fill(null)
         .map((_, row) => {
                 const cols = Array(props.grid.rows).fill(null)
                     .map((_, col) => {
                             const id = `e_${row}_${col}`;
-
-                            let type;
-                            if (props.grid.hasObstacleOnPoint(new Point(row, col))) {
-                                type = BoxType.Obstacle
-                            } else if (rover.current.coordinates.position.equals(new Point(row, col))) {
-                                type = BoxType.Rover
-                            } else {
-                                type = BoxType.NotVisited;
-                            }
+                            const currentPoint = new Point(row, col);
+                            const type = getType(currentPoint);
 
                             return (
                                 <Box
