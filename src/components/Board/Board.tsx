@@ -16,7 +16,7 @@ export enum ControlType {
 
 const Board: React.FC<IBoardProps> = (props) => {
     const rover = useRef(new MarsRover(props.grid));
-    const [visitedPoints, setVisitedPoints] = useState<Point[]>([]);
+    const [visitedPoints, setVisitedPoints] = useState<Point[]>([rover.current.coordinates.position]);
 
     useEffect(() => {
         const onKeyDown = (event: KeyboardEvent) => {
@@ -24,6 +24,12 @@ const Board: React.FC<IBoardProps> = (props) => {
                 case ControlType.Move:
                     rover.current.execute([CommandType.Move]);
                     setVisitedPoints([...visitedPoints, rover.current.coordinates.position]);
+                    break;
+                case ControlType.RotateLeft:
+                    rover.current.execute([CommandType.RotateLeft]);
+                    break;
+                case ControlType.RotateRight:
+                    rover.current.execute([CommandType.RotateRight]);
                     break;
             }
         };
@@ -33,48 +39,44 @@ const Board: React.FC<IBoardProps> = (props) => {
         return () => {
             window.removeEventListener("keydown", onKeyDown)
         }
-    }, [])
+    }, [visitedPoints])
 
-    useEffect(() => {
-        if (!rover.current.coordinates.position.equals(visitedPoints[visitedPoints.length - 1])) {
-            setVisitedPoints([...visitedPoints, rover.current.coordinates.position]);
-        }
-    }, [visitedPoints]);
+    const rows = Array(props.grid.cols).fill(null)
+        .map((_, row) => {
+                const cols = Array(props.grid.rows).fill(null)
+                    .map((_, col) => {
+                            const id = `e_${row}_${col}`;
+
+                            let type;
+                            if (props.grid.hasObstacleOnPoint(new Point(row, col))) {
+                                type = BoxType.Obstacle
+                            } else if (rover.current.coordinates.position.equals(new Point(row, col))) {
+                                type = BoxType.Rover
+                            } else {
+                                type = BoxType.NotVisited;
+                            }
+
+                            return (
+                                <Box
+                                    type={type}
+                                    key={id}
+                                    data-testid={id}
+                                />
+                            );
+                        }
+                    );
+
+                return (
+                    <div key={row} className="flex flex-col-reverse">
+                        {cols}
+                    </div>
+                );
+            }
+        );
 
     return (
-        <div className="flex flex-col">
-            {
-                Array(props.grid.rows).fill(null)
-                    .map((x, row) => (
-                            <div key={`r_${row}`} className="flex flex-row">
-                                {
-                                    Array(props.grid.cols).fill(null)
-                                        .map((z, col) => {
-                                                const id = `e_${row}_${col}`;
-
-                                                let type;
-                                                if (props.grid.hasObstacleOnPoint(new Point(row, col))) {
-                                                    type = BoxType.Obstacle
-                                                } else if (rover.current.coordinates.position.equals(new Point(row, col))) {
-                                                    type = BoxType.Rover
-                                                } else {
-                                                    type = BoxType.NotVisited;
-                                                }
-
-                                                return (
-                                                    <Box
-                                                        type={type}
-                                                        key={id}
-                                                        data-testid={id}
-                                                    />
-                                                );
-                                            }
-                                        )
-                                }
-                            </div>
-                        )
-                    )
-            }
+        <div className="flex">
+            {rows}
         </div>
     );
 }

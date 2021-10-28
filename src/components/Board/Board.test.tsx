@@ -3,7 +3,6 @@ import Board, {ControlType} from "./Board";
 import {Grid} from "../../features/Grid/Grid";
 import {Point} from "../../features/Point";
 import {BoxType} from "../Box/Box";
-import userEvent from "@testing-library/user-event";
 
 describe("Board", () => {
     it.each([
@@ -14,8 +13,8 @@ describe("Board", () => {
         const screen = render(<Board grid={grid} />);
 
         let elementsCount = 0;
-        for (let row = 0; row < grid.rows; row++) {
-            for (let col = 0; col < grid.cols; col++) {
+        for (let row = 0; row < grid.cols; row++) {
+            for (let col = 0; col < grid.rows; col++) {
                 const element = screen.queryByTestId(`e_${row}_${col}`);
 
                 expect(element).toBeInTheDocument();
@@ -43,14 +42,56 @@ describe("Board", () => {
         expect(roverElement).toBeInTheDocument();
     });
 
-    it.each([
-        [ new Grid(5, 6, [ new Point(2, 3), new Point(3, 4)]) ],
-    ])('should move', function (grid: Grid) {
-        const screen = render(<Board grid={grid} />);
+    describe("movement", () => {
+        const gridWithObstacle = new Grid(5, 6, [ new Point(2, 3), new Point(3, 4)]);
 
-        fireEvent.keyDown(window, { key: ControlType.Move })
+        it('should move', function () {
+            const screen = render(<Board grid={gridWithObstacle} />);
 
-        const roverElement = screen.queryByTestId("e_0_1");
-        expect(roverElement?.textContent).toEqual(BoxType.Rover);
-    });
+            fireEvent.keyDown(window, { key: ControlType.Move })
+
+            const roverElement = screen.queryByTestId("e_0_1");
+            expect(roverElement?.textContent).toEqual(BoxType.Rover);
+        });
+
+        it.each([
+            [ControlType.RotateLeft],
+            [ControlType.RotateRight],
+        ])('should rotate (%s) without moving', function (direction: ControlType) {
+            const screen = render(<Board grid={gridWithObstacle} />);
+
+            fireEvent.keyDown(window, { key: direction })
+
+            const roverElement = screen.queryByTestId("e_0_0");
+            expect(roverElement?.textContent).toEqual(BoxType.Rover);
+        });
+
+        it.each([
+            [ControlType.RotateLeft],
+            [ControlType.RotateRight],
+        ])('should rotate (%s) then move forward', function (direction: ControlType) {
+            const screen = render(<Board grid={gridWithObstacle} />);
+
+            fireEvent.keyDown(window, { key: direction })
+            fireEvent.keyDown(window, { key: ControlType.Move })
+
+            const roverElements = screen.queryAllByText(BoxType.Rover);
+            expect(roverElements.length).toEqual(1);
+
+            const roverElement = roverElements[0];
+
+            let expected = "";
+            switch (direction) {
+                case ControlType.RotateLeft:
+                    expected = "e_5_0";
+                    break;
+                case ControlType.RotateRight:
+                    expected = "e_1_0";
+                    break;
+            }
+
+            expect(roverElement?.dataset.testid).toEqual(expected);
+        });
+
+    })
 })
