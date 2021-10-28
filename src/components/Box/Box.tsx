@@ -11,7 +11,7 @@ export interface IBoxProps {
 }
 
 const Box: React.FC<IBoxProps> = (props) => {
-    return <>{props.type}</>;
+    return <div className="p-2 bg-gray-900">{props.type}</div>;
 }
 
 export default Box;

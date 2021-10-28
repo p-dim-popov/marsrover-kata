@@ -24,6 +24,8 @@ export interface ICoordinatesConstructor {
     parse(coords: string): ICoordinates;
 }
 
+// TODO: Fix typings
+// @ts-ignore
 export const Coordinates: ICoordinatesConstructor = class Coordinates implements ICoordinates {
     readonly position: Point;
     direction: DirectionType = DirectionType.North;
