@@ -1,8 +1,9 @@
-import {render} from "@testing-library/react";
-import Board from "./Board";
+import {fireEvent, render} from "@testing-library/react";
+import Board, {ControlType} from "./Board";
 import {Grid} from "../../features/Grid/Grid";
 import {Point} from "../../features/Point";
 import {BoxType} from "../Box/Box";
+import userEvent from "@testing-library/user-event";
 
 describe("Board", () => {
     it.each([
@@ -40,5 +41,16 @@ describe("Board", () => {
         const roverElement = screen.queryByText(BoxType.Rover);
 
         expect(roverElement).toBeInTheDocument();
+    });
+
+    it.each([
+        [ new Grid(5, 6, [ new Point(2, 3), new Point(3, 4)]) ],
+    ])('should move', function (grid: Grid) {
+        const screen = render(<Board grid={grid} />);
+
+        fireEvent.keyDown(window, { key: ControlType.Move })
+
+        const roverElement = screen.queryByTestId("e_0_1");
+        expect(roverElement?.textContent).toEqual(BoxType.Rover);
     });
 })
