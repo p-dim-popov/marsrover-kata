@@ -1,20 +1,20 @@
 {
   "files": {
-    "main.css": "/p-dim-popov/marsrover-kata/static/css/main.31fbd227.chunk.css",
-    "main.js": "/p-dim-popov/marsrover-kata/static/js/main.8a1d3d30.chunk.js",
-    "main.js.map": "/p-dim-popov/marsrover-kata/static/js/main.8a1d3d30.chunk.js.map",
-    "runtime-main.js": "/p-dim-popov/marsrover-kata/static/js/runtime-main.498ab7fb.js",
-    "runtime-main.js.map": "/p-dim-popov/marsrover-kata/static/js/runtime-main.498ab7fb.js.map",
-    "static/js/2.5c957b6c.chunk.js": "/p-dim-popov/marsrover-kata/static/js/2.5c957b6c.chunk.js",
-    "static/js/2.5c957b6c.chunk.js.map": "/p-dim-popov/marsrover-kata/static/js/2.5c957b6c.chunk.js.map",
-    "static/js/3.7e25375b.chunk.js": "/p-dim-popov/marsrover-kata/static/js/3.7e25375b.chunk.js",
-    "static/js/3.7e25375b.chunk.js.map": "/p-dim-popov/marsrover-kata/static/js/3.7e25375b.chunk.js.map",
-    "index.html": "/p-dim-popov/marsrover-kata/index.html",
-    "static/css/main.31fbd227.chunk.css.map": "/p-dim-popov/marsrover-kata/static/css/main.31fbd227.chunk.css.map",
-    "static/js/2.5c957b6c.chunk.js.LICENSE.txt": "/p-dim-popov/marsrover-kata/static/js/2.5c957b6c.chunk.js.LICENSE.txt"
+    "main.css": "/marsrover-kata/static/css/main.31fbd227.chunk.css",
+    "main.js": "/marsrover-kata/static/js/main.8a1d3d30.chunk.js",
+    "main.js.map": "/marsrover-kata/static/js/main.8a1d3d30.chunk.js.map",
+    "runtime-main.js": "/marsrover-kata/static/js/runtime-main.f2e1df06.js",
+    "runtime-main.js.map": "/marsrover-kata/static/js/runtime-main.f2e1df06.js.map",
+    "static/js/2.5c957b6c.chunk.js": "/marsrover-kata/static/js/2.5c957b6c.chunk.js",
+    "static/js/2.5c957b6c.chunk.js.map": "/marsrover-kata/static/js/2.5c957b6c.chunk.js.map",
+    "static/js/3.7e25375b.chunk.js": "/marsrover-kata/static/js/3.7e25375b.chunk.js",
+    "static/js/3.7e25375b.chunk.js.map": "/marsrover-kata/static/js/3.7e25375b.chunk.js.map",
+    "index.html": "/marsrover-kata/index.html",
+    "static/css/main.31fbd227.chunk.css.map": "/marsrover-kata/static/css/main.31fbd227.chunk.css.map",
+    "static/js/2.5c957b6c.chunk.js.LICENSE.txt": "/marsrover-kata/static/js/2.5c957b6c.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
-    "static/js/runtime-main.498ab7fb.js",
+    "static/js/runtime-main.f2e1df06.js",
     "static/js/2.5c957b6c.chunk.js",
     "static/css/main.31fbd227.chunk.css",
     "static/js/main.8a1d3d30.chunk.js"
