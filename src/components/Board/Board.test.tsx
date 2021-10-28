@@ -32,4 +32,13 @@ describe("Board", () => {
         }
         expect(elementsCount).toEqual(grid.rows * grid.cols);
     });
+
+    it.each([
+        [ new Grid(5, 6, [ new Point(2, 3), new Point(3, 4)]) ],
+    ])('should render grid with rover: %s', function (grid: Grid) {
+        const screen = render(<Board grid={grid} />);
+        const roverElement = screen.queryByText(BoxType.Rover);
+
+        expect(roverElement).toBeInTheDocument();
+    });
 })

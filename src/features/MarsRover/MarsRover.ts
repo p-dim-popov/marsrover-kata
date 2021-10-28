@@ -1,5 +1,5 @@
 import {Grid} from "../Grid/Grid";
-import {Coordinates, DIRECTIONS_ORDER, DirectionType} from "../Coordinates/Coordinates";
+import {Coordinates, DIRECTIONS_ORDER, DirectionType, ICoordinates} from "../Coordinates/Coordinates";
 import {Point} from "../Point";
 
 export enum CommandType {
@@ -9,6 +9,7 @@ export enum CommandType {
 }
 
 export interface IMarsRover {
+    coordinates: ICoordinates;
     execute(command: string | CommandType[]): string;
 }
 
@@ -17,7 +18,7 @@ export interface IMarsRoverConstructor {
 }
 
 export const MarsRover: IMarsRoverConstructor = class implements IMarsRover {
-    private coordinates = new Coordinates("0:0:N");
+    coordinates = new Coordinates("0:0:N");
 
     constructor(private readonly grid: Grid) {}
 

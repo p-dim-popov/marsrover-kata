@@ -1,13 +1,23 @@
-import React from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {Grid} from "../../features/Grid/Grid";
 import Box, {BoxType} from "../Box/Box";
 import {Point} from "../../features/Point";
+import MarsRover from "../../features/MarsRover/MarsRover";
 
 export interface IBoardProps {
     grid: Grid;
 }
 
 const Board: React.FC<IBoardProps> = (props) => {
+    const rover = useRef(new MarsRover(props.grid));
+    const [visitedPoints, setVisitedPoints] = useState<Point[]>([]);
+
+    useEffect(() => {
+        if (!rover.current.coordinates.position.equals(visitedPoints[visitedPoints.length - 1])) {
+            setVisitedPoints([...visitedPoints, rover.current.coordinates.position]);
+        }
+    }, [visitedPoints]);
+
     return (
         <div className="flex flex-col">
             {
@@ -22,6 +32,8 @@ const Board: React.FC<IBoardProps> = (props) => {
                                                 let type;
                                                 if (props.grid.hasObstacleOnPoint(new Point(row, col))) {
                                                     type = BoxType.Obstacle
+                                                } else if (rover.current.coordinates.position.equals(new Point(row, col))) {
+                                                    type = BoxType.Rover
                                                 } else {
                                                     type = BoxType.NotVisited;
                                                 }
