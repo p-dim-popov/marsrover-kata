@@ -1,3 +1,5 @@
+import {useState} from "react";
+
 export const isNullNanUndefinedOrEmptyString = (value: any): boolean => {
     return value === null || value === void 0 || Number.isNaN(value) || value === "";
 }
@@ -18,4 +20,9 @@ export const stringifyCoordinates = (row?: number, col?: number, direction?: str
     }
 
     return result;
+}
+
+export const useForceUpdate = () => {
+    const [x, setX] = useState(1);
+    return () => setX(x + 1);
 }

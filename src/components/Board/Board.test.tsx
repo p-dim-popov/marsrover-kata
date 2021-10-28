@@ -92,6 +92,27 @@ describe("Board", () => {
 
             expect(roverElement?.dataset.testid).toEqual(expected);
         });
+
+        it("should rotate box with rover according to direction", function () {
+            const screen = render(<Board grid={new Grid(5)} />);
+            const roverElementWrapper = screen.queryByText(BoxType.Rover)?.parentElement;
+
+            fireEvent.keyDown(window, { key: ControlType.RotateLeft });
+            expect(roverElementWrapper?.className).toMatch(/transform/i);
+            expect(roverElementWrapper?.className).toMatch(/rotate-180/i);
+
+            fireEvent.keyDown(window, { key: ControlType.RotateLeft });
+            expect(roverElementWrapper?.className).toMatch(/transform/i);
+            expect(roverElementWrapper?.className).toMatch(/rotate-90/i);
+
+            fireEvent.keyDown(window, { key: ControlType.RotateLeft });
+            expect(roverElementWrapper?.className).toMatch(/transform/i);
+            expect(roverElementWrapper?.className).toMatch(/ /i);
+
+            fireEvent.keyDown(window, { key: ControlType.RotateLeft });
+            expect(roverElementWrapper?.className).toMatch(/transform/i);
+            expect(roverElementWrapper?.className).toMatch(/-rotate-90/i);
+        });
     });
 
     it("should show if blocked by obstacle", function () {

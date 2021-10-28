@@ -3,6 +3,8 @@ import {Grid} from "../../features/Grid/Grid";
 import Box, {BoxType} from "../Box/Box";
 import {Point} from "../../features/Point";
 import MarsRover, {CommandType} from "../../features/MarsRover/MarsRover";
+import {DirectionType} from "../../features/Coordinates/Coordinates";
+import {useForceUpdate} from "../../features/utils";
 
 export interface IBoardProps {
     grid: Grid;
@@ -14,9 +16,17 @@ export enum ControlType {
     RotateRight = "l",
 }
 
+export const DirectionToRotateMap: Record<DirectionType, string> = {
+    [DirectionType.East]: "",
+    [DirectionType.North]: "-rotate-90",
+    [DirectionType.West]: "rotate-180",
+    [DirectionType.South]: "rotate-90",
+};
+
 const Board: React.FC<IBoardProps> = (props) => {
     const rover = useRef(new MarsRover(props.grid));
     const [visitedPoints, setVisitedPoints] = useState<Point[]>([new Point(rover.current.coordinates.position.x, rover.current.coordinates.position.y)]);
+    const forceUpdate = useForceUpdate();
 
     useEffect(() => {
         const onKeyDown = (event: KeyboardEvent) => {
@@ -27,9 +37,11 @@ const Board: React.FC<IBoardProps> = (props) => {
                     break;
                 case ControlType.RotateLeft:
                     rover.current.execute([CommandType.RotateLeft]);
+                    forceUpdate();
                     break;
                 case ControlType.RotateRight:
                     rover.current.execute([CommandType.RotateRight]);
+                    forceUpdate();
                     break;
             }
         };
@@ -39,7 +51,7 @@ const Board: React.FC<IBoardProps> = (props) => {
         return () => {
             window.removeEventListener("keydown", onKeyDown)
         }
-    }, [visitedPoints]);
+    }, [forceUpdate, visitedPoints]);
 
     const getType = (currentPoint: Point) => {
         if (props.grid.hasObstacleOnPoint(currentPoint)) {
@@ -66,11 +78,15 @@ const Board: React.FC<IBoardProps> = (props) => {
                             const type = getType(currentPoint);
 
                             return (
-                                <Box
-                                    type={type}
+                                <div
                                     key={id}
-                                    data-testid={id}
-                                />
+                                    className={type === BoxType.Rover ? `transform ${DirectionToRotateMap[rover.current.coordinates.direction]}` : ""}
+                                >
+                                    <Box
+                                        type={type}
+                                        data-testid={id}
+                                    />
+                                </div>
                             );
                         }
                     );
