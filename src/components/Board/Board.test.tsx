@@ -7,11 +7,15 @@ describe("Board", () => {
         [ new Grid(5) ],
     ])('should render grid', function (grid: Grid) {
         const screen = render(<Board grid={grid} />);
-        const elements = screen.queryAllByText("X");
 
-        for (const element of elements) {
-            expect(element).toBeInTheDocument();
+        let elementsCount = 0;
+        for (let row = 0; row < grid.rows; row++) {
+            for (let col = 0; col < grid.rows; col++) {
+                const element = screen.queryByText(`${row}-${col}`);
+                expect(element).toBeInTheDocument();
+                elementsCount++;
+            }
         }
-        expect(elements.length).toEqual(grid.rows * grid.cols);
+        expect(elementsCount).toEqual(grid.rows * grid.cols);
     });
 })

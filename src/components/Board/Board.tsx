@@ -6,7 +6,15 @@ export interface IBoardProps {
 }
 
 const Board: React.FC<IBoardProps> = (props) => {
-    return <>{Array(props.grid.rows * props.grid.cols).fill("X").map(x => (<div>{x}</div>))}</>;
+    return (
+        <>
+            {
+                Array(props.grid.rows).fill(null)
+                    .map((x, row) => Array(props.grid.cols).fill(null)
+                        .map((z, col) => (<div key={`${row}-${col}`}>{`${row}-${col}`}</div>)))
+            }
+        </>
+    );
 }
 
 export default Board;
