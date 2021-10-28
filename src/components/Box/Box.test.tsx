@@ -13,4 +13,16 @@ describe("Box", () => {
 
         expect(element).toBeInTheDocument();
     });
+
+    it("should be circle and centered", function () {
+        const screen = render(<Box type={BoxType.Rover} />);
+        const element = screen.queryByText(BoxType.Rover);
+
+        expect(element?.className).toMatch(/h-10/i)
+        expect(element?.className).toMatch(/w-10/i)
+        expect(element?.className).toMatch(/rounded-full/i)
+        expect(element?.className).toMatch(/flex/i)
+        expect(element?.className).toMatch(/items-center/i)
+        expect(element?.className).toMatch(/justify-center/i)
+    });
 })
