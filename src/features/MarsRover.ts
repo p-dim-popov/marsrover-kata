@@ -72,7 +72,8 @@ export const MarsRover: IMarsRoverConstructor = class implements IMarsRover {
                     this.coordinates.direction = DIRECTIONS_ORDER[(DIRECTIONS_ORDER.indexOf(this.coordinates.direction) + 1) % DIRECTIONS_ORDER.length];
                     break;
                 case CommandType.RotateLeft:
-                    this.coordinates.direction = DIRECTIONS_ORDER[Math.abs(DIRECTIONS_ORDER.indexOf(this.coordinates.direction) - 1) % DIRECTIONS_ORDER.length];
+                    const index = DIRECTIONS_ORDER.indexOf(this.coordinates.direction);
+                    this.coordinates.direction = DIRECTIONS_ORDER[(!index ? DIRECTIONS_ORDER.length : index) - 1];
                     break;
                 default:
                     throw new Error("Command type not known!");
