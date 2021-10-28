@@ -7,7 +7,7 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <Board grid={new Grid(5)} />
+        <Board grid={new Grid(5, 7)} />
       </header>
     </div>
   );
