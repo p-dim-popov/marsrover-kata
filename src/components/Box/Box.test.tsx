@@ -6,7 +6,7 @@ describe("Box", () => {
         [BoxType.Rover],
         [BoxType.Obstacle],
         [BoxType.Visited],
-        [BoxType.Empty],
+        [BoxType.NotVisited],
     ])('should render correct element', function (type: BoxType) {
         const screen = render(<Box type={type} />);
         const element = screen.queryByText(type);

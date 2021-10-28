@@ -4,7 +4,7 @@ export enum BoxType {
     Rover = "R",
     Obstacle = "X",
     Visited = "V",
-    Empty = "O",
+    NotVisited = "O",
 }
 
 export interface IBoxProps {

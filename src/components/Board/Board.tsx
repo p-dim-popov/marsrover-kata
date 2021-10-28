@@ -1,6 +1,7 @@
 import React from "react";
 import {Grid} from "../../features/Grid/Grid";
 import Box, {BoxType} from "../Box/Box";
+import {Point} from "../../features/Point";
 
 export interface IBoardProps {
     grid: Grid;
@@ -17,9 +18,17 @@ const Board: React.FC<IBoardProps> = (props) => {
                                     Array(props.grid.cols).fill(null)
                                         .map((z, col) => {
                                                 const id = `e_${row}_${col}`;
+
+                                                let type;
+                                                if (props.grid.hasObstacleOnPoint(new Point(row, col))) {
+                                                    type = BoxType.Obstacle
+                                                } else {
+                                                    type = BoxType.NotVisited;
+                                                }
+
                                                 return (
                                                     <Box
-                                                        type={BoxType.Empty}
+                                                        type={type}
                                                         key={id}
                                                         data-testid={id}
                                                     />
