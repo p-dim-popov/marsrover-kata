@@ -11,7 +11,7 @@ describe("Board", () => {
         let elementsCount = 0;
         for (let row = 0; row < grid.rows; row++) {
             for (let col = 0; col < grid.rows; col++) {
-                const element = screen.queryByText(`${row}-${col}`);
+                const element = screen.queryByTestId(`e_${row}_${col}`);
                 expect(element).toBeInTheDocument();
                 elementsCount++;
             }
