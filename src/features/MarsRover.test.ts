@@ -25,7 +25,7 @@ describe("MarsRover", () => {
             ["MMLMLMM", "9:0:S"],
             ["MMLRRM", "1:2:E"],
             ["MMMRMMM", "O:0:3:E"],
-            ["MMMRMMMLMMMMMMM", "O:0:0:N"],
+            ["MMMRMMMLMMMMMMM", "0:0:N"],
         ])('should move as expected (%s) -> (%s)', function (commands: string | CommandType[], expectedCoordinates) {
             const marsRover = new MarsRover(grid);
             expect(marsRover.execute(commands)).toEqual(expectedCoordinates);

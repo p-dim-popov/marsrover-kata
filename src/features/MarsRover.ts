@@ -27,6 +27,7 @@ export const MarsRover: IMarsRoverConstructor = class implements IMarsRover {
             return;
         }
 
+        this.coordinates.hasObstacles = false;
         onSuccess();
     }
 
