@@ -21,6 +21,42 @@ export const MarsRover: IMarsRoverConstructor = class implements IMarsRover {
 
     constructor(private readonly grid: Grid) {}
 
+    private tryMoveTowardsPoint(point: Point, onSuccess: Function) {
+        if (this.grid.hasObstacleOnPoint(point)) {
+            this.coordinates.hasObstacles = true;
+            return;
+        }
+
+        onSuccess();
+    }
+
+    private moveForward(): void {
+        switch (this.coordinates.direction) {
+            case DirectionType.East: {
+                const desiredX = (this.coordinates.position.x + 1) % this.grid.cols;
+                this.tryMoveTowardsPoint(new Point(desiredX, this.coordinates.position.y), () => this.coordinates.position.x = desiredX)
+                break;
+            }
+            case DirectionType.West: {
+                const desiredX = (!this.coordinates.position.x ? this.grid.cols : this.coordinates.position.x) - 1;
+                this.tryMoveTowardsPoint(new Point(desiredX, this.coordinates.position.y), () => this.coordinates.position.x = desiredX)
+                break;
+            }
+            case DirectionType.North: {
+                const desiredY = (this.coordinates.position.y + 1) % this.grid.rows;
+                this.tryMoveTowardsPoint(new Point(this.coordinates.position.x, desiredY), () => this.coordinates.position.y = desiredY);
+                break;
+            }
+            case DirectionType.South: {
+                const desiredY = (!this.coordinates.position.y ? this.grid.rows : this.coordinates.position.y) - 1;
+                this.tryMoveTowardsPoint(new Point(this.coordinates.position.x, desiredY), () => this.coordinates.position.y = desiredY);
+                break;
+            }
+            default:
+                throw new Error("Unknown direction!")
+        }
+    }
+
     execute(commands: string | CommandType[]): string {
         if (!commands) {
             throw new Error("Command/s is not valid!");
@@ -30,46 +66,7 @@ export const MarsRover: IMarsRoverConstructor = class implements IMarsRover {
             const command = _ as CommandType;
             switch (command) {
                 case CommandType.Move:
-                    switch (this.coordinates.direction) {
-                        case DirectionType.East: {
-                            const desiredX = (this.coordinates.position.x + 1) % this.grid.cols;
-                            if (this.grid.hasObstacleOnPoint(new Point(desiredX, this.coordinates.position.y))) {
-                                this.coordinates.hasObstacles = true;
-                            } else {
-                                this.coordinates.position.x = desiredX;
-                            }
-                            break;
-                        }
-                        case DirectionType.West: {
-                            const desiredX = (!this.coordinates.position.x ? this.grid.cols : this.coordinates.position.x) - 1;
-                            if (this.grid.hasObstacleOnPoint(new Point(desiredX, this.coordinates.position.y))) {
-                                this.coordinates.hasObstacles = true;
-                            } else {
-                                this.coordinates.position.x = desiredX;
-                            }
-                            break;
-                        }
-                        case DirectionType.North: {
-                            const desiredY = (this.coordinates.position.y + 1) % this.grid.rows;
-                            if (this.grid.hasObstacleOnPoint(new Point(this.coordinates.position.x, desiredY))) {
-                                this.coordinates.hasObstacles = true;
-                            } else {
-                                this.coordinates.position.y = desiredY;
-                            }
-                            break;
-                        }
-                        case DirectionType.South: {
-                            const desiredY = (!this.coordinates.position.y ? this.grid.rows : this.coordinates.position.y) - 1;
-                            if (this.grid.hasObstacleOnPoint(new Point(this.coordinates.position.x, desiredY))) {
-                                this.coordinates.hasObstacles = true;
-                            } else {
-                                this.coordinates.position.y = desiredY;
-                            }
-                            break;
-                        }
-                        default:
-                            throw new Error("Unknown direction!")
-                    }
+                    this.moveForward();
                     break;
                 case CommandType.RotateRight:
                     this.coordinates.direction = DIRECTIONS_ORDER[(DIRECTIONS_ORDER.indexOf(this.coordinates.direction) + 1) % DIRECTIONS_ORDER.length];
