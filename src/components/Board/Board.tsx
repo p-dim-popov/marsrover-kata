@@ -1,7 +1,7 @@
 import React, {useCallback, useEffect, useRef, useState} from "react";
 import {Grid} from "../../features/Grid/Grid";
 import Box, {BoxType} from "../Box/Box";
-import {Point} from "../../features/Point/Point";
+import {IPoint, Point} from "../../features/Point/Point";
 import MarsRover, {CommandType} from "../../features/MarsRover/MarsRover";
 import {DirectionType} from "../../features/Coordinates/Coordinates";
 import {useForceUpdate} from "../../features/utils";
@@ -26,12 +26,12 @@ export const DirectionToRotateMap: Record<DirectionType, string> = {
 
 const Board: React.FC<IBoardProps> = (props) => {
     const rover = useRef(new MarsRover(props.grid));
-    const [visitedPoints, setVisitedPoints] = useState<Point[]>([rover.current.coordinates.position.clone()]);
+    const [visitedPoints, setVisitedPoints] = useState<IPoint[]>([{ ...rover.current.coordinates.position }]);
     const forceUpdate = useForceUpdate();
 
     const moveForward = useCallback(() => {
         rover.current.execute([CommandType.Move]);
-        setVisitedPoints([...visitedPoints, rover.current.coordinates.position.clone()]);
+        setVisitedPoints([...visitedPoints, { ...rover.current.coordinates.position }]);
     }, [visitedPoints]);
 
     const rotate = useCallback((direction: CommandType.RotateLeft | CommandType.RotateRight) => {
@@ -64,16 +64,16 @@ const Board: React.FC<IBoardProps> = (props) => {
         }
     }, [moveForward, rotate]);
 
-    const getType = useCallback((currentPoint: Point): BoxType => {
+    const getType = useCallback((currentPoint: IPoint): BoxType => {
         if (props.grid.hasObstacleOnPoint(currentPoint)) {
             return BoxType.Obstacle;
         }
 
-        if (rover.current.coordinates.position.equals(currentPoint)) {
+        if (Point.equals(rover.current.coordinates.position)(currentPoint)) {
             return BoxType.Rover;
         }
 
-        if (visitedPoints.some(point => point.equals(currentPoint))) {
+        if (visitedPoints.some(Point.equals(currentPoint))) {
             return BoxType.Visited;
         }
 
@@ -85,8 +85,7 @@ const Board: React.FC<IBoardProps> = (props) => {
                 const cols = Array(props.grid.rows).fill(null)
                     .map((_, col) => {
                             const id = `e_${row}_${col}`;
-                            const currentPoint = new Point(row, col);
-                            const type = getType(currentPoint);
+                            const type = getType({ x: row, y: col });
 
                             return (
                                 <div

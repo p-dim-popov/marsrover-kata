@@ -3,20 +3,13 @@ export interface IPoint {
     y: number;
 }
 
-export class Point implements IPoint {
-    static clone(point: IPoint): Point {
-        return new Point(point.x, point.y);
+export const Point = {
+    equals: (point1: IPoint) => (point2: IPoint) => {
+        return point1 === point2 || (
+            !!point1
+            && !!point2
+            && point1.x === point2.x
+            && point1.y === point2.y
+        );
     }
-
-    constructor(public x: number, public y: number) {}
-
-    equals(point: Point) {
-        return !!point && this.x === point.x && this.y === point.y;
-    }
-
-    clone(): Point {
-        return Point.clone(this);
-    }
-}
-
-export default Point;
+};

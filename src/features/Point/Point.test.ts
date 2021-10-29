@@ -1,17 +1,13 @@
-import {Point} from "./Point";
+import {IPoint, Point} from "./Point";
 
 describe("Point", () => {
-    it("should have clone method", function () {
-        const point1 = new Point(1, 2);
-        const point1Clone = point1.clone();
-        expect(point1.x).toEqual(point1Clone.x);
-        expect(point1.y).toEqual(point1Clone.y);
-    });
-
-    it("should have clone function", function () {
-        const point1 = new Point(1, 2);
-        const point1Clone = Point.clone(point1);
-        expect(point1.x).toEqual(point1Clone.x);
-        expect(point1.y).toEqual(point1Clone.y);
+    it.each([
+        [{ x: 1, y: 2 }, { x: 1, y: 2 }, true],
+        [{ x: 1, y: 2 }, { x: 1, y: 0 }, false],
+        [null!, { x: 1, y: 2 }, false],
+        [{ x: 1, y: 2 }, null!, false],
+        [null!, null!, true],
+    ])("should compare correctly - (%s), (%s)", function (point1: IPoint, point2: IPoint, areEqual: boolean) {
+        expect(Point.equals(point1)(point2)).toEqual(areEqual);
     });
 });

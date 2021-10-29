@@ -1,17 +1,16 @@
 import {fireEvent, render, screen} from "@testing-library/react";
 import Board from "./Board";
 import {Grid} from "../../features/Grid/Grid";
-import {Point} from "../../features/Point/Point";
 import {BoxType} from "../Box/Box";
 import userEvent from "@testing-library/user-event";
 
 describe("Board", () => {
-    const gridWithObstacle = new Grid(5, 6, [ new Point(2, 3), new Point(3, 4)]);
+    const gridWithObstacle = new Grid(5, 6, [{ x: 2, y: 3 }, { x: 3, y: 4 }]);
 
     it.each([
         [ new Grid(5) ],
         [ new Grid(5, 6) ],
-        [ new Grid(5, 6, [ new Point(2, 3), new Point(3, 4)]) ],
+        [ new Grid(5, 6, [{ x: 2, y: 3 }, { x: 3, y: 4 }]) ],
     ])('should render grid: %s', function (grid: Grid) {
         const screen = render(<Board grid={grid} />);
 
@@ -22,7 +21,7 @@ describe("Board", () => {
 
                 expect(element).toBeInTheDocument();
 
-                const possibleValues = grid.hasObstacleOnPoint(new Point(row, col))
+                const possibleValues = grid.hasObstacleOnPoint({ x: row, y: col })
                     ? [BoxType.Obstacle]
                     : [BoxType.NotVisited, BoxType.Rover, BoxType.Visited];
 
@@ -37,7 +36,7 @@ describe("Board", () => {
     });
 
     it.each([
-        [ new Grid(5, 6, [ new Point(2, 3), new Point(3, 4)]) ],
+        [ new Grid(5, 6, [ { x: 2, y: 3 }, { x: 3, y: 4 }]) ],
     ])('should render grid with rover: %s', function (grid: Grid) {
         const screen = render(<Board grid={grid} />);
         const roverElement = screen.queryByText(BoxType.Rover);

@@ -1,11 +1,11 @@
-import {Point} from "../Point/Point";
+import {IPoint, Point} from "../Point/Point";
 
 export class Grid {
     public readonly rows: number;
     public readonly cols: number;
-    public readonly obstacles: Point[];
+    public readonly obstacles: IPoint[];
 
-    constructor(rows: number, cols?: number | Point[], obstacles?: Point[]) {
+    constructor(rows: number, cols?: number | IPoint[], obstacles?: IPoint[]) {
         this.rows = rows;
         this.cols = rows;
         this.obstacles = obstacles ?? [];
@@ -17,6 +17,6 @@ export class Grid {
         }
     }
 
-    hasObstacleOnPoint = (desiredPoint: Point) => this.obstacles
-        .some(point => point.x === desiredPoint.x && point.y === desiredPoint.y)
+    hasObstacleOnPoint = (desiredPoint: IPoint) => this.obstacles
+        .some(Point.equals(desiredPoint));
 }

@@ -1,6 +1,6 @@
 import {Grid} from "../Grid/Grid";
 import {Coordinates, DIRECTIONS_ORDER, DirectionType, ICoordinates} from "../Coordinates/Coordinates";
-import {Point} from "../Point/Point";
+import {IPoint} from "../Point/Point";
 
 export enum CommandType {
     Move = "M",
@@ -22,8 +22,8 @@ export const MarsRover: IMarsRoverConstructor = class implements IMarsRover {
 
     constructor(private readonly grid: Grid) {}
 
-    private tryMoveTowardsPoint(point: Point, onSuccess: Function) {
-        if (this.grid.hasObstacleOnPoint(point)) {
+    private tryMoveTowardsPoint(point: Partial<IPoint>, onSuccess: Function) {
+        if (this.grid.hasObstacleOnPoint({ ...this.coordinates.position, ...point })) {
             this.coordinates.hasObstacles = true;
             return;
         }
@@ -36,22 +36,22 @@ export const MarsRover: IMarsRoverConstructor = class implements IMarsRover {
         switch (this.coordinates.direction) {
             case DirectionType.East: {
                 const desiredX = (this.coordinates.position.x + 1) % this.grid.cols;
-                this.tryMoveTowardsPoint(new Point(desiredX, this.coordinates.position.y), () => this.coordinates.position.x = desiredX)
+                this.tryMoveTowardsPoint({ x: desiredX }, () => this.coordinates.position.x = desiredX)
                 break;
             }
             case DirectionType.West: {
                 const desiredX = (!this.coordinates.position.x ? this.grid.cols : this.coordinates.position.x) - 1;
-                this.tryMoveTowardsPoint(new Point(desiredX, this.coordinates.position.y), () => this.coordinates.position.x = desiredX)
+                this.tryMoveTowardsPoint({ x: desiredX }, () => this.coordinates.position.x = desiredX)
                 break;
             }
             case DirectionType.North: {
                 const desiredY = (this.coordinates.position.y + 1) % this.grid.rows;
-                this.tryMoveTowardsPoint(new Point(this.coordinates.position.x, desiredY), () => this.coordinates.position.y = desiredY);
+                this.tryMoveTowardsPoint({ y: desiredY }, () => this.coordinates.position.y = desiredY);
                 break;
             }
             case DirectionType.South: {
                 const desiredY = (!this.coordinates.position.y ? this.grid.rows : this.coordinates.position.y) - 1;
-                this.tryMoveTowardsPoint(new Point(this.coordinates.position.x, desiredY), () => this.coordinates.position.y = desiredY);
+                this.tryMoveTowardsPoint({ y: desiredY }, () => this.coordinates.position.y = desiredY);
                 break;
             }
             default:
