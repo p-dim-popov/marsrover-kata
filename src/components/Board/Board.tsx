@@ -5,6 +5,7 @@ import {Point} from "../../features/Point";
 import MarsRover, {CommandType} from "../../features/MarsRover/MarsRover";
 import {DirectionType} from "../../features/Coordinates/Coordinates";
 import {useForceUpdate} from "../../features/utils";
+import ControlButton from "../ControlButton/ControlButton";
 
 export interface IBoardProps {
     grid: Grid;
@@ -106,9 +107,9 @@ const Board: React.FC<IBoardProps> = (props) => {
                 {rows}
             </div>
             <div className="flex flex-row justify-between content-center">
-                <button className="bg-gray-300 text-black rounded m-2">Rotate Left</button>
-                <button className="bg-gray-300 text-black rounded m-2">Move Forward</button>
-                <button className="bg-gray-300 text-black rounded m-2">Rotate Right</button>
+                <ControlButton>Rotate Left</ControlButton>
+                <ControlButton>Move Forward</ControlButton>
+                <ControlButton>Rotate Right</ControlButton>
             </div>
         </div>
     );
