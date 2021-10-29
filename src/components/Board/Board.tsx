@@ -26,12 +26,12 @@ export const DirectionToRotateMap: Record<DirectionType, string> = {
 
 const Board: React.FC<IBoardProps> = (props) => {
     const rover = useRef(new MarsRover(props.grid));
-    const [visitedPoints, setVisitedPoints] = useState<Point[]>([new Point(rover.current.coordinates.position.x, rover.current.coordinates.position.y)]);
+    const [visitedPoints, setVisitedPoints] = useState<Point[]>([rover.current.coordinates.position.clone()]);
     const forceUpdate = useForceUpdate();
 
     const moveForward = useCallback(() => {
         rover.current.execute([CommandType.Move]);
-        setVisitedPoints([...visitedPoints, new Point(rover.current.coordinates.position.x, rover.current.coordinates.position.y)]);
+        setVisitedPoints([...visitedPoints, rover.current.coordinates.position.clone()]);
     }, [visitedPoints]);
 
     const rotate = useCallback((direction: CommandType.RotateLeft | CommandType.RotateRight) => {

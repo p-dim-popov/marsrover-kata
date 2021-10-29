@@ -1,4 +1,13 @@
-export class Point {
+export interface IPoint {
+    x: number;
+    y: number;
+}
+
+export class Point implements IPoint {
+    static clone(point: IPoint): Point {
+        return new Point(point.x, point.y);
+    }
+
     constructor(public x: number, public y: number) {}
 
     equals(point: Point) {
@@ -6,6 +15,8 @@ export class Point {
     }
 
     clone(): Point {
-        return new Point(this.x, this.y);
+        return Point.clone(this);
     }
 }
+
+export default Point;
