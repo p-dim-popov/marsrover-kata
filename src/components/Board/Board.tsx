@@ -34,19 +34,22 @@ const Board: React.FC<IBoardProps> = (props) => {
         setVisitedPoints([...visitedPoints, new Point(rover.current.coordinates.position.x, rover.current.coordinates.position.y)]);
     }, [visitedPoints]);
 
+    const rotate = useCallback((direction: CommandType.RotateLeft | CommandType.RotateRight) => {
+        rover.current.execute([direction]);
+        forceUpdate();
+    }, [forceUpdate])
+
     useEffect(() => {
         const onKeyDown = (event: KeyboardEvent) => {
             switch (event.key as ControlType) {
                 case ControlType.Move:
                     moveForward();
                     break;
-                case ControlType.RotateLeft:
-                    rover.current.execute([CommandType.RotateLeft]);
-                    forceUpdate();
-                    break;
                 case ControlType.RotateRight:
-                    rover.current.execute([CommandType.RotateRight]);
-                    forceUpdate();
+                    rotate(CommandType.RotateLeft);
+                    break;
+                case ControlType.RotateLeft:
+                    rotate(CommandType.RotateLeft);
                     break;
             }
         };
@@ -111,15 +114,9 @@ const Board: React.FC<IBoardProps> = (props) => {
                 {rows}
             </div>
             <div className="flex flex-row justify-between content-center">
-                <ControlButton onClick={() => {
-                    rover.current.execute([CommandType.RotateLeft]);
-                    forceUpdate();
-                }}>Rotate Left</ControlButton>
+                <ControlButton onClick={() => rotate(CommandType.RotateLeft)}>Rotate Left</ControlButton>
                 <ControlButton onClick={moveForward}>Move Forward</ControlButton>
-                <ControlButton onClick={() => {
-                    rover.current.execute([CommandType.RotateRight]);
-                    forceUpdate();
-                }}>Rotate Right</ControlButton>
+                <ControlButton onClick={() => rotate(CommandType.RotateRight)}>Rotate Right</ControlButton>
             </div>
         </div>
     );
