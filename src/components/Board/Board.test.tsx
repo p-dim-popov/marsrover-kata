@@ -1,4 +1,4 @@
-import {fireEvent, render} from "@testing-library/react";
+import {fireEvent, render, screen} from "@testing-library/react";
 import Board, {ControlType} from "./Board";
 import {Grid} from "../../features/Grid/Grid";
 import {Point} from "../../features/Point";
@@ -154,5 +154,13 @@ describe("Board", () => {
 
         const visitedBoxes = screen.queryAllByText(BoxType.Visited);
         expect(visitedBoxes.length).toBeGreaterThan(0)
+    });
+
+    describe("control buttons", () => {
+        it('should have three control buttons under the grid', function () {
+            render(<Board grid={gridWithObstacle} />);
+
+            expect(screen.queryAllByText(/move forward|rotate left|rotate right/i)).toHaveLength(3);
+        });
     });
 })
