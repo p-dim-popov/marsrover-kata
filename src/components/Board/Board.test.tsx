@@ -179,23 +179,5 @@ describe("Board", () => {
             expect(parentContainer.classList.contains("justify-between")).toBeTruthy();
             expect(parentContainer.classList.contains("content-center")).toBeTruthy();
         });
-
-
-        it('should have rounded borders, gray background and black color', function () {
-            render(<Board grid={gridWithObstacle} />);
-
-            const button = screen.queryByText(/move forward/i);
-
-            if (!button) {
-                throw new Error("Not wrapped in container");
-            }
-
-            expect(button).toBeInTheDocument();
-
-            expect(button.classList.contains("bg-gray-300")).toBeTruthy();
-            expect(button.classList.contains("text-black")).toBeTruthy();
-            expect(button.classList.contains("rounded")).toBeTruthy();
-            expect(button.classList.contains("m-2")).toBeTruthy();
-        });
     });
 })
