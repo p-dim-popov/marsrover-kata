@@ -1,5 +1,5 @@
 import {fireEvent, render, screen} from "@testing-library/react";
-import Board, {ControlType} from "./Board";
+import Board from "./Board";
 import {Grid} from "../../features/Grid/Grid";
 import {Point} from "../../features/Point/Point";
 import {BoxType} from "../Box/Box";
@@ -49,16 +49,16 @@ describe("Board", () => {
         it('should move', function () {
             const screen = render(<Board grid={gridWithObstacle} />);
 
-            fireEvent.keyDown(window, { key: ControlType.Move })
+            fireEvent.keyDown(window, { key: "ArrowUp" })
 
             const roverElement = screen.queryByTestId("e_0_1");
             expect(roverElement?.textContent).toEqual(BoxType.Rover);
         });
 
         it.each([
-            [ControlType.RotateLeft],
-            [ControlType.RotateRight],
-        ])('should rotate (%s) without moving', function (direction: ControlType) {
+            ["ArrowLeft"],
+            ["ArrowRight"],
+        ])('should rotate (%s) without moving', function (direction: string) {
             const screen = render(<Board grid={gridWithObstacle} />);
 
             fireEvent.keyDown(window, { key: direction })
@@ -68,13 +68,13 @@ describe("Board", () => {
         });
 
         it.each([
-            [ControlType.RotateLeft],
-            [ControlType.RotateRight],
-        ])('should rotate (%s) then move forward', function (direction: ControlType) {
+            ["ArrowLeft"],
+            ["ArrowRight"],
+        ])('should rotate (%s) then move forward', function (direction: string) {
             const screen = render(<Board grid={gridWithObstacle} />);
 
             fireEvent.keyDown(window, { key: direction })
-            fireEvent.keyDown(window, { key: ControlType.Move })
+            fireEvent.keyDown(window, { key: "ArrowUp" })
 
             const roverElements = screen.queryAllByText(BoxType.Rover);
             expect(roverElements.length).toEqual(1);
@@ -83,10 +83,10 @@ describe("Board", () => {
 
             let expected = "";
             switch (direction) {
-                case ControlType.RotateLeft:
+                case "ArrowLeft":
                     expected = "e_5_0";
                     break;
-                case ControlType.RotateRight:
+                case "ArrowRight":
                     expected = "e_1_0";
                     break;
             }
@@ -98,19 +98,21 @@ describe("Board", () => {
             const screen = render(<Board grid={new Grid(5)} />);
             const roverElementWrapper = screen.queryByText(BoxType.Rover)?.parentElement;
 
-            fireEvent.keyDown(window, { key: ControlType.RotateLeft });
+            const control = "ArrowLeft";
+
+            fireEvent.keyDown(window, { key: control });
             expect(roverElementWrapper?.className).toMatch(/transform/i);
             expect(roverElementWrapper?.className).toMatch(/rotate-180/i);
 
-            fireEvent.keyDown(window, { key: ControlType.RotateLeft });
+            fireEvent.keyDown(window, { key: control });
             expect(roverElementWrapper?.className).toMatch(/transform/i);
             expect(roverElementWrapper?.className).toMatch(/rotate-90/i);
 
-            fireEvent.keyDown(window, { key: ControlType.RotateLeft });
+            fireEvent.keyDown(window, { key: control });
             expect(roverElementWrapper?.className).toMatch(/transform/i);
             expect(roverElementWrapper?.className).toMatch(/ /i);
 
-            fireEvent.keyDown(window, { key: ControlType.RotateLeft });
+            fireEvent.keyDown(window, { key: control });
             expect(roverElementWrapper?.className).toMatch(/transform/i);
             expect(roverElementWrapper?.className).toMatch(/-rotate-90/i);
         });
@@ -119,13 +121,13 @@ describe("Board", () => {
     it("should show if blocked by obstacle", function () {
         const screen = render(<Board grid={gridWithObstacle} />);
 
-        fireEvent.keyDown(window, { key: ControlType.Move });
-        fireEvent.keyDown(window, { key: ControlType.Move });
-        fireEvent.keyDown(window, { key: ControlType.Move });
-        fireEvent.keyDown(window, { key: ControlType.RotateRight });
-        fireEvent.keyDown(window, { key: ControlType.Move });
-        fireEvent.keyDown(window, { key: ControlType.Move });
-        fireEvent.keyDown(window, { key: ControlType.Move });
+        fireEvent.keyDown(window, { key: "ArrowUp" });
+        fireEvent.keyDown(window, { key: "ArrowUp" });
+        fireEvent.keyDown(window, { key: "ArrowUp" });
+        fireEvent.keyDown(window, { key: "ArrowRight" });
+        fireEvent.keyDown(window, { key: "ArrowUp" });
+        fireEvent.keyDown(window, { key: "ArrowUp" });
+        fireEvent.keyDown(window, { key: "ArrowUp" });
 
         const alertElement = screen.queryByText("BLOCKED BY OBSTACLE!");
         expect(alertElement).toBeInTheDocument();
@@ -134,24 +136,24 @@ describe("Board", () => {
     it("should not show if was blocked by obstacle and now is not", function () {
         const screen = render(<Board grid={gridWithObstacle} />);
 
-        fireEvent.keyDown(window, { key: ControlType.Move });
-        fireEvent.keyDown(window, { key: ControlType.Move });
-        fireEvent.keyDown(window, { key: ControlType.Move });
-        fireEvent.keyDown(window, { key: ControlType.RotateRight });
-        fireEvent.keyDown(window, { key: ControlType.Move });
-        fireEvent.keyDown(window, { key: ControlType.RotateRight });
-        fireEvent.keyDown(window, { key: ControlType.Move });
+        fireEvent.keyDown(window, { key: "ArrowUp" });
+        fireEvent.keyDown(window, { key: "ArrowUp" });
+        fireEvent.keyDown(window, { key: "ArrowUp" });
+        fireEvent.keyDown(window, { key: "ArrowRight" });
+        fireEvent.keyDown(window, { key: "ArrowUp" });
+        fireEvent.keyDown(window, { key: "ArrowRight" });
+        fireEvent.keyDown(window, { key: "ArrowUp" });
 
         const alertElement = screen.queryByText("BLOCKED BY OBSTACLE!");
         expect(alertElement).not.toBeInTheDocument();
     });
 
     it.each([
-        [[ControlType.Move, ControlType.Move]],
-    ])('should show trail', function (commands: ControlType[]) {
+        [["ArrowUp", "ArrowUp"]],
+    ])('should show trail', function (controls: string[]) {
         const screen = render(<Board grid={new Grid(5)} />);
 
-        commands.forEach(c => fireEvent.keyDown(window, { key: c }));
+        controls.forEach(c => fireEvent.keyDown(window, { key: c }));
 
         const visitedBoxes = screen.queryAllByText(BoxType.Visited);
         expect(visitedBoxes.length).toBeGreaterThan(0)

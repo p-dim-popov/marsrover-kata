@@ -11,10 +11,10 @@ export interface IBoardProps {
     grid: Grid;
 }
 
-export enum ControlType {
-    Move = "k",
-    RotateLeft = "j",
-    RotateRight = "l",
+export const Controls = {
+    Move: ["k", "ArrowUp"],
+    RotateLeft: ["j", "ArrowLeft"],
+    RotateRight: ["l", "ArrowRight"],
 }
 
 export const DirectionToRotateMap: Record<DirectionType, string> = {
@@ -41,16 +41,19 @@ const Board: React.FC<IBoardProps> = (props) => {
 
     useEffect(() => {
         const onKeyDown = (event: KeyboardEvent) => {
-            switch (event.key as ControlType) {
-                case ControlType.Move:
-                    moveForward();
-                    break;
-                case ControlType.RotateRight:
-                    rotate(CommandType.RotateRight);
-                    break;
-                case ControlType.RotateLeft:
-                    rotate(CommandType.RotateLeft);
-                    break;
+            if (Controls.Move.includes(event.key)) {
+                moveForward();
+                return;
+            }
+
+            if (Controls.RotateLeft.includes(event.key)) {
+                rotate(CommandType.RotateLeft);
+                return;
+            }
+
+            if (Controls.RotateRight.includes(event.key)) {
+                rotate(CommandType.RotateRight);
+                return;
             }
         };
 
