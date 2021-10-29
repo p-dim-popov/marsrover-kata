@@ -205,4 +205,17 @@ describe("Board", () => {
             expect(roverClassName).not.toEqual(rotatedRoverClassName);
         });
     });
+
+    it('should be centered', function () {
+        const { container } = render(<Board grid={new Grid(5)} />);
+
+        expect(Array.from(container.children).pop()?.classList.contains("items-center")).toBeTruthy();
+    });
+
+    it('should have margin between message, grid and controls', function () {
+        const { container } = render(<Board grid={new Grid(5)} />);
+
+        expect(Array.from(container.children).pop()?.classList.contains("space-x-5")).toBeTruthy();
+        expect(Array.from(container.children).pop()?.classList.contains("space-y-5")).toBeTruthy();
+    });
 })

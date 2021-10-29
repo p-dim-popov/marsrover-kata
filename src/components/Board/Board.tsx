@@ -46,7 +46,7 @@ const Board: React.FC<IBoardProps> = (props) => {
                     moveForward();
                     break;
                 case ControlType.RotateRight:
-                    rotate(CommandType.RotateLeft);
+                    rotate(CommandType.RotateRight);
                     break;
                 case ControlType.RotateLeft:
                     rotate(CommandType.RotateLeft);
@@ -59,7 +59,7 @@ const Board: React.FC<IBoardProps> = (props) => {
         return () => {
             window.removeEventListener("keydown", onKeyDown)
         }
-    }, [forceUpdate, visitedPoints]);
+    }, [forceUpdate, moveForward, rotate, visitedPoints]);
 
     const getType = (currentPoint: Point) => {
         if (props.grid.hasObstacleOnPoint(currentPoint)) {
@@ -108,7 +108,7 @@ const Board: React.FC<IBoardProps> = (props) => {
         );
 
     return (
-        <div className="flex flex-col">
+        <div className="flex flex-col items-center space-x-5 space-y-5">
             {rover.current.coordinates.hasObstacles && <span>BLOCKED BY OBSTACLE!</span>}
             <div className="flex">
                 {rows}
