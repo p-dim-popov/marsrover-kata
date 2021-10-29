@@ -1,17 +1,17 @@
 import {fireEvent, render, screen} from "@testing-library/react";
 import Board from "./Board";
-import {Grid} from "../../features/Grid/Grid";
+import {Grid, IGrid} from "../../features/Grid/Grid";
 import {BoxType} from "../Box/Box";
 import userEvent from "@testing-library/user-event";
 
 describe("Board", () => {
-    const gridWithObstacle = new Grid(5, 6, [{ x: 2, y: 3 }, { x: 3, y: 4 }]);
+    const gridWithObstacle = Grid.new([5, 6], [{ x: 2, y: 3 }, { x: 3, y: 4 }]);
 
     it.each([
-        [ new Grid(5) ],
-        [ new Grid(5, 6) ],
-        [ new Grid(5, 6, [{ x: 2, y: 3 }, { x: 3, y: 4 }]) ],
-    ])('should render grid: %s', function (grid: Grid) {
+        [ Grid.new([5]) ],
+        [ Grid.new([5, 6]) ],
+        [ Grid.new([5, 6], [{ x: 2, y: 3 }, { x: 3, y: 4 }]) ],
+    ])('should render grid: %s', function (grid: IGrid) {
         const screen = render(<Board grid={grid} />);
 
         let elementsCount = 0;
@@ -21,7 +21,7 @@ describe("Board", () => {
 
                 expect(element).toBeInTheDocument();
 
-                const possibleValues = grid.hasObstacleOnPoint({ x: row, y: col })
+                const possibleValues = Grid.hasObstacleOnPoint({ x: row, y: col })(grid)
                     ? [BoxType.Obstacle]
                     : [BoxType.NotVisited, BoxType.Rover, BoxType.Visited];
 
@@ -36,8 +36,8 @@ describe("Board", () => {
     });
 
     it.each([
-        [ new Grid(5, 6, [ { x: 2, y: 3 }, { x: 3, y: 4 }]) ],
-    ])('should render grid with rover: %s', function (grid: Grid) {
+        [ Grid.new([5, 6], [ { x: 2, y: 3 }, { x: 3, y: 4 }]) ],
+    ])('should render grid with rover: %s', function (grid: IGrid) {
         const screen = render(<Board grid={grid} />);
         const roverElement = screen.queryByText(BoxType.Rover);
 
@@ -97,7 +97,7 @@ describe("Board", () => {
             ["ArrowLeft"],
             ["ArrowRight"]
         ])("should rotate box according to direction - (%s)", function (control: string) {
-            const screen = render(<Board grid={new Grid(5)} />);
+            const screen = render(<Board grid={Grid.new([5])} />);
             const roverElementWrapper = screen.queryByText(BoxType.Rover)?.parentElement;
 
             let rotateOrder = [
@@ -153,7 +153,7 @@ describe("Board", () => {
     it.each([
         [["ArrowUp", "ArrowUp"]],
     ])('should show trail', function (controls: string[]) {
-        const screen = render(<Board grid={new Grid(5)} />);
+        const screen = render(<Board grid={Grid.new([5])} />);
 
         controls.forEach(c => fireEvent.keyDown(window, { key: c }));
 
@@ -186,7 +186,7 @@ describe("Board", () => {
         });
 
         it('should move rover', function () {
-            render(<Board grid={new Grid(5)} />);
+            render(<Board grid={Grid.new([5])} />);
             const rover = screen.getByTestId("e_0_0");
             const moveButton = screen.getByText(/move forward/i);
 
@@ -199,7 +199,7 @@ describe("Board", () => {
             ["left"],
             ["right"],
         ])('should rotate rover', function (buttonTextContentDirection: string) {
-            render(<Board grid={new Grid(5)} />);
+            render(<Board grid={Grid.new([5])} />);
             const roverClassName = screen.getByTestId("e_0_0").parentElement?.className;
             const regex = new RegExp(`rotate ${buttonTextContentDirection}`, "i");
             const moveButton = screen.getByText(regex);
@@ -211,13 +211,13 @@ describe("Board", () => {
     });
 
     it('should be centered', function () {
-        const { container } = render(<Board grid={new Grid(5)} />);
+        const { container } = render(<Board grid={Grid.new([5])} />);
 
         expect(Array.from(container.children).pop()?.classList.contains("items-center")).toBeTruthy();
     });
 
     it('should have margin between message, grid and controls', function () {
-        const { container } = render(<Board grid={new Grid(5)} />);
+        const { container } = render(<Board grid={Grid.new([5])} />);
 
         expect(Array.from(container.children).pop()?.classList.contains("space-x-5")).toBeTruthy();
         expect(Array.from(container.children).pop()?.classList.contains("space-y-5")).toBeTruthy();

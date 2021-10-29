@@ -2,7 +2,7 @@ import MarsRover, {CommandType} from "./MarsRover";
 import {Grid} from "../Grid/Grid";
 import {Coordinates} from "../Coordinates/Coordinates";
 
-const gridWithObstacle = new Grid(10, [{ x: 1, y: 3 }]);
+const gridWithObstacle = Grid.new([10], [{ x: 1, y: 3 }]);
 
 describe("MarsRover", () => {
     describe("execute", () => {

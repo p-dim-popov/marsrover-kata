@@ -1,4 +1,4 @@
-import {Grid} from "../Grid/Grid";
+import {Grid, IGrid} from "../Grid/Grid";
 import {Coordinates, DIRECTIONS_ORDER, DirectionType, ICoordinates} from "../Coordinates/Coordinates";
 import {IPoint} from "../Point/Point";
 
@@ -14,16 +14,16 @@ export interface IMarsRover {
 }
 
 export interface IMarsRoverConstructor {
-    new(grid: Grid): IMarsRover;
+    new(grid: IGrid): IMarsRover;
 }
 
 export const MarsRover: IMarsRoverConstructor = class implements IMarsRover {
     coordinates = new Coordinates("0:0:N");
 
-    constructor(private readonly grid: Grid) {}
+    constructor(private readonly grid: IGrid) {}
 
     private tryMoveTowardsPoint(point: Partial<IPoint>, onSuccess: Function) {
-        if (this.grid.hasObstacleOnPoint({ ...this.coordinates.position, ...point })) {
+        if (Grid.hasObstacleOnPoint({ ...this.coordinates.position, ...point })(this.grid)) {
             this.coordinates.hasObstacles = true;
             return;
         }

@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useRef, useState} from "react";
-import {Grid} from "../../features/Grid/Grid";
+import {Grid, IGrid} from "../../features/Grid/Grid";
 import Box, {BoxType} from "../Box/Box";
 import {IPoint, Point} from "../../features/Point/Point";
 import MarsRover, {CommandType} from "../../features/MarsRover/MarsRover";
@@ -8,7 +8,7 @@ import {useForceUpdate} from "../../features/utils";
 import ControlButton from "../ControlButton/ControlButton";
 
 export interface IBoardProps {
-    grid: Grid;
+    grid: IGrid;
 }
 
 export const Controls = {
@@ -65,7 +65,7 @@ const Board: React.FC<IBoardProps> = (props) => {
     }, [moveForward, rotate]);
 
     const getType = useCallback((currentPoint: IPoint): BoxType => {
-        if (props.grid.hasObstacleOnPoint(currentPoint)) {
+        if (Grid.hasObstacleOnPoint(currentPoint)(props.grid)) {
             return BoxType.Obstacle;
         }
 
