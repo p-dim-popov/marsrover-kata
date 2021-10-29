@@ -1,7 +1,7 @@
 import React, {useCallback, useEffect, useRef, useState} from "react";
 import {Grid} from "../../features/Grid/Grid";
 import Box, {BoxType} from "../Box/Box";
-import {Point} from "../../features/Point";
+import {Point} from "../../features/Point/Point";
 import MarsRover, {CommandType} from "../../features/MarsRover/MarsRover";
 import {DirectionType} from "../../features/Coordinates/Coordinates";
 import {useForceUpdate} from "../../features/utils";

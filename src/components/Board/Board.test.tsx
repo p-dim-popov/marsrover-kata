@@ -1,7 +1,7 @@
 import {fireEvent, render, screen} from "@testing-library/react";
 import Board, {ControlType} from "./Board";
 import {Grid} from "../../features/Grid/Grid";
-import {Point} from "../../features/Point";
+import {Point} from "../../features/Point/Point";
 import {BoxType} from "../Box/Box";
 import userEvent from "@testing-library/user-event";
 

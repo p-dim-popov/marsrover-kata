@@ -1,5 +1,5 @@
 import {Grid} from "./Grid";
-import {Point} from "../Point";
+import {Point} from "../Point/Point";
 
 const grid = new Grid(10, [new Point(2, 3)])
 

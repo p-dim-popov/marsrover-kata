@@ -2,7 +2,7 @@ import React from 'react';
 import './App.css';
 import Board from "./components/Board/Board";
 import {Grid} from "./features/Grid/Grid";
-import {Point} from "./features/Point";
+import {Point} from "./features/Point/Point";
 
 function App() {
   return (
