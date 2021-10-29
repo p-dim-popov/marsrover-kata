@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from "react";
+import React, {useCallback, useEffect, useRef, useState} from "react";
 import {Grid} from "../../features/Grid/Grid";
 import Box, {BoxType} from "../Box/Box";
 import {Point} from "../../features/Point";
@@ -29,12 +29,16 @@ const Board: React.FC<IBoardProps> = (props) => {
     const [visitedPoints, setVisitedPoints] = useState<Point[]>([new Point(rover.current.coordinates.position.x, rover.current.coordinates.position.y)]);
     const forceUpdate = useForceUpdate();
 
+    const moveForward = useCallback(() => {
+        rover.current.execute([CommandType.Move]);
+        setVisitedPoints([...visitedPoints, new Point(rover.current.coordinates.position.x, rover.current.coordinates.position.y)]);
+    }, [visitedPoints]);
+
     useEffect(() => {
         const onKeyDown = (event: KeyboardEvent) => {
             switch (event.key as ControlType) {
                 case ControlType.Move:
-                    rover.current.execute([CommandType.Move]);
-                    setVisitedPoints([...visitedPoints, new Point(rover.current.coordinates.position.x, rover.current.coordinates.position.y)]);
+                    moveForward();
                     break;
                 case ControlType.RotateLeft:
                     rover.current.execute([CommandType.RotateLeft]);
@@ -108,10 +112,7 @@ const Board: React.FC<IBoardProps> = (props) => {
             </div>
             <div className="flex flex-row justify-between content-center">
                 <ControlButton>Rotate Left</ControlButton>
-                <ControlButton onClick={() => {
-                    rover.current.execute([CommandType.Move]);
-                    setVisitedPoints([...visitedPoints, new Point(rover.current.coordinates.position.x, rover.current.coordinates.position.y)]);
-                }}>Move Forward</ControlButton>
+                <ControlButton onClick={moveForward}>Move Forward</ControlButton>
                 <ControlButton>Rotate Right</ControlButton>
             </div>
         </div>
