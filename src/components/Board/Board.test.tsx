@@ -162,5 +162,22 @@ describe("Board", () => {
 
             expect(screen.queryAllByText(/move forward|rotate left|rotate right/i)).toHaveLength(3);
         });
+
+        it('should be in flexbox in row', function () {
+            render(<Board grid={gridWithObstacle} />);
+
+            const parentContainer = screen.queryByText(/move forward/i)?.parentElement;
+
+            if (!parentContainer) {
+                throw new Error("Not wrapped in container");
+            }
+
+            expect(parentContainer).toBeInTheDocument();
+
+            expect(parentContainer.classList.contains("flex")).toBeTruthy();
+            expect(parentContainer.classList.contains("flex-row")).toBeTruthy();
+            expect(parentContainer.classList.contains("justify-between")).toBeTruthy();
+            expect(parentContainer.classList.contains("content-center")).toBeTruthy();
+        });
     });
 })

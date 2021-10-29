@@ -105,9 +105,11 @@ const Board: React.FC<IBoardProps> = (props) => {
             <div className="flex">
                 {rows}
             </div>
-            <button>Rotate Left</button>
-            <button>Move Forward</button>
-            <button>Rotate Right</button>
+            <div className="flex flex-row justify-between content-center">
+                <button>Rotate Left</button>
+                <button>Move Forward</button>
+                <button>Rotate Right</button>
+            </div>
         </div>
     );
 }
