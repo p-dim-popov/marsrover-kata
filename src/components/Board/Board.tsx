@@ -59,7 +59,7 @@ const Board: React.FC<IBoardProps> = (props) => {
         return () => {
             window.removeEventListener("keydown", onKeyDown)
         }
-    }, [forceUpdate, moveForward, rotate, visitedPoints]);
+    }, [moveForward, rotate]);
 
     const getType = (currentPoint: Point) => {
         if (props.grid.hasObstacleOnPoint(currentPoint)) {
