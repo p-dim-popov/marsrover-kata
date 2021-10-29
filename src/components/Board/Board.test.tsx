@@ -45,8 +45,8 @@ describe("Board", () => {
         expect(roverElement).toBeInTheDocument();
     });
 
-    describe("movement", () => {
-        it('should move', function () {
+    describe("rover movement", () => {
+        it('should move on keydown', function () {
             const screen = render(<Board grid={gridWithObstacle} />);
 
             fireEvent.keyDown(window, { key: "ArrowUp" })
@@ -70,7 +70,7 @@ describe("Board", () => {
         it.each([
             ["ArrowLeft"],
             ["ArrowRight"],
-        ])('should rotate (%s) then move forward', function (direction: string) {
+        ])("should rotate (%s) then move forward", function (direction: string) {
             const screen = render(<Board grid={gridWithObstacle} />);
 
             fireEvent.keyDown(window, { key: direction })
@@ -94,31 +94,34 @@ describe("Board", () => {
             expect(roverElement?.dataset.testid).toEqual(expected);
         });
 
-        it("should rotate box with rover according to direction", function () {
+        it.each([
+            ["ArrowLeft"],
+            ["ArrowRight"]
+        ])("should rotate box according to direction - (%s)", function (control: string) {
             const screen = render(<Board grid={new Grid(5)} />);
             const roverElementWrapper = screen.queryByText(BoxType.Rover)?.parentElement;
 
-            const control = "ArrowLeft";
+            let rotateOrder = [
+                /rotate-180/i,
+                /rotate-90/i,
+                / /i,
+                /-rotate-90/i,
+            ];
 
-            fireEvent.keyDown(window, { key: control });
-            expect(roverElementWrapper?.className).toMatch(/transform/i);
-            expect(roverElementWrapper?.className).toMatch(/rotate-180/i);
+            if (control === "ArrowRight") {
+                rotateOrder.reverse();
+                rotateOrder.push(rotateOrder.shift() as RegExp);
+            }
 
-            fireEvent.keyDown(window, { key: control });
-            expect(roverElementWrapper?.className).toMatch(/transform/i);
-            expect(roverElementWrapper?.className).toMatch(/rotate-90/i);
-
-            fireEvent.keyDown(window, { key: control });
-            expect(roverElementWrapper?.className).toMatch(/transform/i);
-            expect(roverElementWrapper?.className).toMatch(/ /i);
-
-            fireEvent.keyDown(window, { key: control });
-            expect(roverElementWrapper?.className).toMatch(/transform/i);
-            expect(roverElementWrapper?.className).toMatch(/-rotate-90/i);
+            rotateOrder.forEach((direction) => {
+                fireEvent.keyDown(window, { key: control });
+                expect(roverElementWrapper?.className).toMatch(/transform/i);
+                expect(roverElementWrapper?.className).toMatch(direction);
+            });
         });
     });
 
-    it("should show if blocked by obstacle", function () {
+    it("should show alert if blocked by obstacle", function () {
         const screen = render(<Board grid={gridWithObstacle} />);
 
         fireEvent.keyDown(window, { key: "ArrowUp" });
@@ -133,7 +136,7 @@ describe("Board", () => {
         expect(alertElement).toBeInTheDocument();
     });
 
-    it("should not show if was blocked by obstacle and now is not", function () {
+    it("should not show alert if was blocked by obstacle and now is not", function () {
         const screen = render(<Board grid={gridWithObstacle} />);
 
         fireEvent.keyDown(window, { key: "ArrowUp" });
