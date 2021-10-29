@@ -61,7 +61,7 @@ const Board: React.FC<IBoardProps> = (props) => {
         }
     }, [moveForward, rotate]);
 
-    const getType = (currentPoint: Point) => {
+    const getType = useCallback((currentPoint: Point): BoxType => {
         if (props.grid.hasObstacleOnPoint(currentPoint)) {
             return BoxType.Obstacle;
         }
@@ -75,7 +75,7 @@ const Board: React.FC<IBoardProps> = (props) => {
         }
 
         return BoxType.NotVisited;
-    }
+    }, [props.grid, visitedPoints]);
 
     const rows = Array(props.grid.cols).fill(null)
         .map((_, row) => {
