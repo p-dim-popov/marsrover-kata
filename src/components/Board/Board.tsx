@@ -111,9 +111,15 @@ const Board: React.FC<IBoardProps> = (props) => {
                 {rows}
             </div>
             <div className="flex flex-row justify-between content-center">
-                <ControlButton>Rotate Left</ControlButton>
+                <ControlButton onClick={() => {
+                    rover.current.execute([CommandType.RotateLeft]);
+                    forceUpdate();
+                }}>Rotate Left</ControlButton>
                 <ControlButton onClick={moveForward}>Move Forward</ControlButton>
-                <ControlButton>Rotate Right</ControlButton>
+                <ControlButton onClick={() => {
+                    rover.current.execute([CommandType.RotateRight]);
+                    forceUpdate();
+                }}>Rotate Right</ControlButton>
             </div>
         </div>
     );

@@ -190,5 +190,19 @@ describe("Board", () => {
 
             expect(rover.textContent).not.toEqual(BoxType.Rover);
         });
+
+        it.each([
+            ["left"],
+            ["right"],
+        ])('should rotate rover', function (buttonTextContentDirection: string) {
+            render(<Board grid={new Grid(5)} />);
+            const roverClassName = screen.getByTestId("e_0_0").parentElement?.className;
+            const regex = new RegExp(`rotate ${buttonTextContentDirection}`, "i");
+            const moveButton = screen.getByText(regex);
+
+            userEvent.click(moveButton);
+            const rotatedRoverClassName = screen.getByTestId("e_0_0").parentElement?.className;
+            expect(roverClassName).not.toEqual(rotatedRoverClassName);
+        });
     });
 })
