@@ -3,6 +3,7 @@ import Board, {ControlType} from "./Board";
 import {Grid} from "../../features/Grid/Grid";
 import {Point} from "../../features/Point";
 import {BoxType} from "../Box/Box";
+import userEvent from "@testing-library/user-event";
 
 describe("Board", () => {
     const gridWithObstacle = new Grid(5, 6, [ new Point(2, 3), new Point(3, 4)]);
@@ -178,6 +179,16 @@ describe("Board", () => {
             expect(parentContainer.classList.contains("flex-row")).toBeTruthy();
             expect(parentContainer.classList.contains("justify-between")).toBeTruthy();
             expect(parentContainer.classList.contains("content-center")).toBeTruthy();
+        });
+
+        it('should move rover', function () {
+            render(<Board grid={new Grid(5)} />);
+            const rover = screen.getByTestId("e_0_0");
+            const moveButton = screen.getByText(/move forward/i);
+
+            userEvent.click(moveButton);
+
+            expect(rover.textContent).not.toEqual(BoxType.Rover);
         });
     });
 })
