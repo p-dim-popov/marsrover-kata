@@ -33,9 +33,8 @@ export const Coordinates: ICoordinatesConstructor = class Coordinates implements
 
     constructor(position: string | Point, direction: DirectionType, hasObstacles: boolean = false) {
         if (typeof position === "string") {
-            // TODO: implement clone
             const data = Coordinates.parse(position);
-            this.position = new Point(data.position.x, data.position.y);
+            this.position = Point.clone(data.position);
             this.direction = data.direction;
             this.hasObstacles = data.hasObstacles;
         } else {
