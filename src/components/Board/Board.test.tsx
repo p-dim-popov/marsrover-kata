@@ -1,9 +1,9 @@
 import {fireEvent, render, screen} from "@testing-library/react";
-import Board from "./Board";
+import Board, {getPointFromIndex} from "./Board";
 import {Grid, IGrid} from "../../features/Grid/Grid";
 import {BoxType} from "../Box/Box";
 import userEvent from "@testing-library/user-event";
-import {Point} from "../../features/Point/Point";
+import {IPoint, Point} from "../../features/Point/Point";
 
 describe("Board", () => {
     const gridWithObstacle = Grid.new([5, 6], [{ x: 2, y: 3 }, { x: 3, y: 4 }]);
@@ -236,4 +236,19 @@ describe("Board", () => {
         fireEvent.keyDown(window, { key: "ArrowLeft" });
         expect(statusContainer?.classList.contains("h-10")).toBeTruthy();
     });
+
+    describe("getPointFromIndex", () => {
+        it.each([
+            [2, { x: 2, y: 0 }, Grid.new([3, 5])],
+            [0, { x: 0, y: 0 }, Grid.new([3, 5])],
+            [8, { x: 3, y: 1 }, Grid.new([3, 5])],
+            [2, { x: 2, y: 0 }, Grid.new([5, 3])],
+            [0, { x: 0, y: 0 }, Grid.new([5, 3])],
+            [8, { x: 2, y: 2 }, Grid.new([5, 3])],
+        ])("should work as expected - index: %s -> point: %s // board: %s", function (index: number, expected: IPoint, grid: IGrid) {
+            const result = getPointFromIndex(index, grid);
+            expect(result.x).toEqual(expected.x);
+            expect(result.y).toEqual(expected.y);
+        });
+    })
 })
