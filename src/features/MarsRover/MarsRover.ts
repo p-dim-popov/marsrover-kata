@@ -18,7 +18,7 @@ export interface IMarsRoverConstructor {
 }
 
 export const MarsRover: IMarsRoverConstructor = class implements IMarsRover {
-    coordinates = new Coordinates("0:0:N");
+    coordinates = Coordinates.parse("0:0:N")[0]!;
 
     constructor(private readonly grid: IGrid) {}
 
@@ -84,7 +84,7 @@ export const MarsRover: IMarsRoverConstructor = class implements IMarsRover {
             }
         }
 
-        return this.coordinates.toString();
+        return Coordinates.toString(this.coordinates);
     }
 }
 

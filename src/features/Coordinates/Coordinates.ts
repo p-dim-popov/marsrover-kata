@@ -1,4 +1,3 @@
-import {isNullNanUndefinedOrEmptyString} from "../utils";
 import {IPoint} from "../Point/Point";
 
 export enum DirectionType {
@@ -14,39 +13,20 @@ export interface ICoordinates {
     position: IPoint;
     direction: DirectionType;
     hasObstacles: boolean;
-    toString(): string;
 }
 
-export interface ICoordinatesConstructor {
-    new(coords: string): ICoordinates;
-    new(position: IPoint, direction: string, hasObstacles?: boolean): ICoordinates;
-
-    parse(coords: string): ICoordinates;
-}
-
-// TODO: Fix typings
-// @ts-ignore
-export const Coordinates: ICoordinatesConstructor = class Coordinates implements ICoordinates {
-    readonly position: IPoint;
-    direction: DirectionType = DirectionType.North;
-    hasObstacles = false;
-
-    constructor(position: string | IPoint, direction: DirectionType, hasObstacles: boolean = false) {
-        if (typeof position === "string") {
-            const data = Coordinates.parse(position);
-            this.position = { ...data.position };
-            this.direction = data.direction;
-            this.hasObstacles = data.hasObstacles;
-        } else {
-            this.position = { ...position };
-            this.direction = direction;
-            this.hasObstacles = hasObstacles;
+export const Coordinates = {
+    new: (position: IPoint, direction: DirectionType = DirectionType.North, hasObstacles: boolean = false): ICoordinates => {
+        return {
+            position: { ...position },
+            direction,
+            hasObstacles,
         }
-    }
+    },
 
-    static parse(coords: string): Coordinates {
+    parse: (coords: string): [ICoordinates?, Error?] => {
         if (!coords) {
-            throw new Error("Not valid coordinates!")
+            return [undefined, Error("Coordinates are required!")];
         }
 
         let hasObstacles = false;
@@ -61,24 +41,28 @@ export const Coordinates: ICoordinatesConstructor = class Coordinates implements
         const col = +splittedCoords[1];
         const direction = splittedCoords[2] as DirectionType;
 
-        if (isNullNanUndefinedOrEmptyString(row)
-            || isNullNanUndefinedOrEmptyString(col)
-            || isNullNanUndefinedOrEmptyString(direction) || !Object.values(DirectionType).includes(direction)) {
-            throw new Error("Not valid coordinates!")
+        if (Number.isNaN(row)) {
+            return [undefined, Error("Rows are required!")];
         }
 
-        return new Coordinates({ x: row, y: col }, direction, hasObstacles);
-    }
+        if (Number.isNaN(col)) {
+            return [undefined, Error("Columns are required")];
+        }
 
-    toString(): string {
-        let result = `${this.position.x}:${this.position.y}:${this.direction}`
+        if (!direction || !Object.values(DirectionType).includes(direction)) {
+            return [undefined, Error(`Direction is not one of the possible: ${DirectionType}`)];
+        }
 
-        if (this.hasObstacles) {
+        return [{ position: { x: row, y: col }, direction, hasObstacles }];
+    },
+
+    toString: (self: ICoordinates): string => {
+        let result = `${self.position.x}:${self.position.y}:${self.direction}`
+
+        if (self.hasObstacles) {
             result = "O:" + result;
         }
 
         return result;
-    }
-}
-
-export default Coordinates;
+    },
+};
