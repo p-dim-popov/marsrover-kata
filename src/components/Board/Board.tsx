@@ -115,7 +115,9 @@ const Board: React.FC<IBoardProps> = (props) => {
 
     return (
         <div className="flex flex-col items-center space-x-5 space-y-5">
-            {rover.coordinates.hasObstacles && <span>BLOCKED BY OBSTACLE!</span>}
+            <div className="h-10">
+                {rover.coordinates.hasObstacles && <span>BLOCKED BY OBSTACLE!</span>}
+            </div>
             <div className="flex">
                 {rows}
             </div>

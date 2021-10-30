@@ -3,6 +3,7 @@ import Board from "./Board";
 import {Grid, IGrid} from "../../features/Grid/Grid";
 import {BoxType} from "../Box/Box";
 import userEvent from "@testing-library/user-event";
+import {Point} from "../../features/Point/Point";
 
 describe("Board", () => {
     const gridWithObstacle = Grid.new([5, 6], [{ x: 2, y: 3 }, { x: 3, y: 4 }]);
@@ -221,5 +222,18 @@ describe("Board", () => {
 
         expect(Array.from(container.children).pop()?.classList.contains("space-x-5")).toBeTruthy();
         expect(Array.from(container.children).pop()?.classList.contains("space-y-5")).toBeTruthy();
+    });
+
+    it("should have status container with fixed width", function () {
+        render(<Board grid={Grid.new([2], [{x: 0, y: 1}])} />);
+
+        fireEvent.keyDown(window, { key: "ArrowUp" });
+        fireEvent.keyDown(window, { key: "ArrowUp" });
+
+        const statusContainer = screen.queryByText("BLOCKED BY OBSTACLE!")?.parentElement;
+        expect(statusContainer?.classList.contains("h-10")).toBeTruthy();
+
+        fireEvent.keyDown(window, { key: "ArrowLeft" });
+        expect(statusContainer?.classList.contains("h-10")).toBeTruthy();
     });
 })
