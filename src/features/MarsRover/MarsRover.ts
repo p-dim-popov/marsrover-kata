@@ -10,82 +10,99 @@ export enum CommandType {
 
 export interface IMarsRover {
     coordinates: ICoordinates;
-    execute(command: string | CommandType[]): string;
 }
 
-export interface IMarsRoverConstructor {
-    new(grid: IGrid): IMarsRover;
-}
-
-export const MarsRover: IMarsRoverConstructor = class implements IMarsRover {
-    coordinates = Coordinates.parse("0:0:N")[0]!;
-
-    constructor(private readonly grid: IGrid) {}
-
-    private tryMoveTowardsPoint(point: Partial<IPoint>, onSuccess: Function) {
-        if (Grid.hasObstacleOnPoint({ ...this.coordinates.position, ...point })(this.grid)) {
-            this.coordinates.hasObstacles = true;
-            return;
+const _MarsRover = {
+    tryMoveTowardsPoint: (point: Partial<IPoint>) => (grid: IGrid) => (coordinates: ICoordinates): ICoordinates => {
+        const desiredPoint = {...coordinates.position, ...point};
+        if (Grid.hasObstacleOnPoint(desiredPoint)(grid)) {
+            return {
+                ...coordinates,
+                hasObstacles: true,
+            };
         }
 
-        this.coordinates.hasObstacles = false;
-        onSuccess();
-    }
+        return {
+            ...coordinates,
+            position: desiredPoint,
+            hasObstacles: false,
+        }
+    },
 
-    private moveForward(): void {
-        switch (this.coordinates.direction) {
+    getMoveFunction: (grid: IGrid) => (coordinates: ICoordinates): [((grid: IGrid) => (coordinates: ICoordinates) => ICoordinates)?, Error?] => {
+        switch (coordinates.direction) {
             case DirectionType.East: {
-                const desiredX = (this.coordinates.position.x + 1) % this.grid.cols;
-                this.tryMoveTowardsPoint({ x: desiredX }, () => this.coordinates.position.x = desiredX)
-                break;
+                const desiredX = (coordinates.position.x + 1) % grid.cols;
+                return [_MarsRover.tryMoveTowardsPoint({x: desiredX})];
             }
             case DirectionType.West: {
-                const desiredX = (!this.coordinates.position.x ? this.grid.cols : this.coordinates.position.x) - 1;
-                this.tryMoveTowardsPoint({ x: desiredX }, () => this.coordinates.position.x = desiredX)
-                break;
+                const desiredX = (!coordinates.position.x ? grid.cols : coordinates.position.x) - 1;
+                return [_MarsRover.tryMoveTowardsPoint({x: desiredX})];
             }
             case DirectionType.North: {
-                const desiredY = (this.coordinates.position.y + 1) % this.grid.rows;
-                this.tryMoveTowardsPoint({ y: desiredY }, () => this.coordinates.position.y = desiredY);
-                break;
+                const desiredY = (coordinates.position.y + 1) % grid.rows;
+                return [_MarsRover.tryMoveTowardsPoint({y: desiredY})];
             }
             case DirectionType.South: {
-                const desiredY = (!this.coordinates.position.y ? this.grid.rows : this.coordinates.position.y) - 1;
-                this.tryMoveTowardsPoint({ y: desiredY }, () => this.coordinates.position.y = desiredY);
-                break;
+                const desiredY = (!coordinates.position.y ? grid.rows : coordinates.position.y) - 1;
+                return [_MarsRover.tryMoveTowardsPoint({y: desiredY})];
             }
             default:
-                throw new Error("Unknown direction!")
+                return [undefined, Error("Unknown direction!")];
         }
-    }
+    },
 
-    execute(commands: string | CommandType[]): string {
-        if (!commands) {
-            throw new Error("Command/s is not valid!");
-        }
-
-        for (const _ of typeof commands === "string" ? commands.split(""): commands) {
-            const command = _ as CommandType;
-            switch (command) {
-                case CommandType.Move:
-                    this.moveForward();
-                    break;
-                case CommandType.RotateRight:
-                    this.coordinates.direction = DIRECTIONS_ORDER[(DIRECTIONS_ORDER.indexOf(this.coordinates.direction) + 1) % DIRECTIONS_ORDER.length];
-                    this.coordinates.hasObstacles = false;
-                    break;
-                case CommandType.RotateLeft:
-                    const index = DIRECTIONS_ORDER.indexOf(this.coordinates.direction);
-                    this.coordinates.direction = DIRECTIONS_ORDER[(!index ? DIRECTIONS_ORDER.length : index) - 1];
-                    this.coordinates.hasObstacles = false;
-                    break;
-                default:
-                    throw new Error("Command type not known!");
-            }
+    moveForward: (grid: IGrid) => (coordinates: ICoordinates): [ICoordinates?, Error?] => {
+        const [fn, err] = _MarsRover.getMoveFunction(grid)(coordinates);
+        if (err || !fn) {
+            return [undefined, err];
         }
 
-        return Coordinates.toString(this.coordinates);
-    }
+        return [fn(grid)(coordinates)];
+    },
 }
 
-export default MarsRover;
+export const MarsRover = {
+    new(coordinates: ICoordinates = Coordinates.parse("0:0:N")[0]!): IMarsRover {
+        return {
+            coordinates,
+        };
+    },
+
+    execute: (commands: string | CommandType[]) => (grid: IGrid) => (self: IMarsRover): [string?, Error?] => {
+        if (!commands) {
+            return [undefined, Error("Command/s is not valid!")];
+        }
+
+        const _commands = (typeof commands === "string" ? commands.split("") : commands);
+        const [coordinates,] = _commands
+            .reduce<[ICoordinates, Error?]>(([prevCoordinates, error], command) => {
+                switch (command as CommandType) {
+                    case CommandType.Move:
+                        const [currentCoordinates, err] = _MarsRover.moveForward(grid)(prevCoordinates);
+                        if (err || !currentCoordinates) {
+                            return [prevCoordinates, err];
+                        }
+
+                        return [currentCoordinates];
+                    case CommandType.RotateRight:
+                        return [Coordinates.new(
+                            prevCoordinates.position,
+                            DIRECTIONS_ORDER[(DIRECTIONS_ORDER.indexOf(prevCoordinates.direction) + 1) % DIRECTIONS_ORDER.length],
+                            false,
+                        )];
+                    case CommandType.RotateLeft:
+                        const index = DIRECTIONS_ORDER.indexOf(prevCoordinates.direction);
+                        return [Coordinates.new(
+                            prevCoordinates.position,
+                            DIRECTIONS_ORDER[(!index ? DIRECTIONS_ORDER.length : index) - 1],
+                            false,
+                        )];
+                    default:
+                        return [prevCoordinates, Error("Command type not known!")];
+                }
+            }, [{...self.coordinates}]);
+
+        return [Coordinates.toString(coordinates)];
+    },
+}

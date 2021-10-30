@@ -1,10 +1,9 @@
-import React, {useCallback, useEffect, useRef, useState} from "react";
+import React, {useCallback, useEffect, useState} from "react";
 import {Grid, IGrid} from "../../features/Grid/Grid";
 import Box, {BoxType} from "../Box/Box";
 import {IPoint, Point} from "../../features/Point/Point";
-import MarsRover, {CommandType} from "../../features/MarsRover/MarsRover";
-import {DirectionType} from "../../features/Coordinates/Coordinates";
-import {useForceUpdate} from "../../features/utils";
+import {CommandType, MarsRover} from "../../features/MarsRover/MarsRover";
+import {Coordinates, DirectionType} from "../../features/Coordinates/Coordinates";
 import ControlButton from "../ControlButton/ControlButton";
 
 export interface IBoardProps {
@@ -25,34 +24,39 @@ export const DirectionToRotateMap: Record<DirectionType, string> = {
 };
 
 const Board: React.FC<IBoardProps> = (props) => {
-    const rover = useRef(new MarsRover(props.grid));
-    const [visitedPoints, setVisitedPoints] = useState<IPoint[]>([{ ...rover.current.coordinates.position }]);
-    const forceUpdate = useForceUpdate();
+    const [rover, setRover] = useState(MarsRover.new());
+    const [visitedPoints, setVisitedPoints] = useState<IPoint[]>([{ ...rover.coordinates.position }]);
 
-    const moveForward = useCallback(() => {
-        rover.current.execute([CommandType.Move]);
-        setVisitedPoints([...visitedPoints, { ...rover.current.coordinates.position }]);
-    }, [visitedPoints]);
+    const controlRover = useCallback((command: CommandType) => {
+        const [coordinates, execError] = MarsRover.execute([command])(props.grid)(rover);
+        if (execError || !coordinates) {
+            return;
+        }
 
-    const rotate = useCallback((direction: CommandType.RotateLeft | CommandType.RotateRight) => {
-        rover.current.execute([direction]);
-        forceUpdate();
-    }, [forceUpdate])
+        const [parsedCoordinates, parseError] = Coordinates.parse(coordinates);
+        if (parseError || !parsedCoordinates) {
+            return;
+        }
+
+        setRover(MarsRover.new(parsedCoordinates));
+        setVisitedPoints([...visitedPoints, { ...parsedCoordinates.position }]);
+
+    }, [props.grid, rover, visitedPoints]);
 
     useEffect(() => {
         const onKeyDown = (event: KeyboardEvent) => {
             if (Controls.Move.includes(event.key)) {
-                moveForward();
+                controlRover(CommandType.Move);
                 return;
             }
 
             if (Controls.RotateLeft.includes(event.key)) {
-                rotate(CommandType.RotateLeft);
+                controlRover(CommandType.RotateLeft);
                 return;
             }
 
             if (Controls.RotateRight.includes(event.key)) {
-                rotate(CommandType.RotateRight);
+                controlRover(CommandType.RotateRight);
                 return;
             }
         };
@@ -62,14 +66,14 @@ const Board: React.FC<IBoardProps> = (props) => {
         return () => {
             window.removeEventListener("keydown", onKeyDown)
         }
-    }, [moveForward, rotate]);
+    }, [controlRover]);
 
     const getType = useCallback((currentPoint: IPoint): BoxType => {
         if (Grid.hasObstacleOnPoint(currentPoint)(props.grid)) {
             return BoxType.Obstacle;
         }
 
-        if (Point.equals(rover.current.coordinates.position)(currentPoint)) {
+        if (Point.equals(rover.coordinates.position)(currentPoint)) {
             return BoxType.Rover;
         }
 
@@ -78,7 +82,7 @@ const Board: React.FC<IBoardProps> = (props) => {
         }
 
         return BoxType.NotVisited;
-    }, [props.grid, visitedPoints]);
+    }, [props.grid, rover.coordinates.position, visitedPoints]);
 
     const rows = Array(props.grid.cols).fill(null)
         .map((_, row) => {
@@ -90,7 +94,7 @@ const Board: React.FC<IBoardProps> = (props) => {
                             return (
                                 <div
                                     key={id}
-                                    className={type === BoxType.Rover ? `transform ${DirectionToRotateMap[rover.current.coordinates.direction]}` : ""}
+                                    className={type === BoxType.Rover ? `transform ${DirectionToRotateMap[rover.coordinates.direction]}` : ""}
                                 >
                                     <Box
                                         type={type}
@@ -111,14 +115,14 @@ const Board: React.FC<IBoardProps> = (props) => {
 
     return (
         <div className="flex flex-col items-center space-x-5 space-y-5">
-            {rover.current.coordinates.hasObstacles && <span>BLOCKED BY OBSTACLE!</span>}
+            {rover.coordinates.hasObstacles && <span>BLOCKED BY OBSTACLE!</span>}
             <div className="flex">
                 {rows}
             </div>
             <div className="flex flex-row justify-between content-center">
-                <ControlButton onClick={() => rotate(CommandType.RotateLeft)}>Rotate Left</ControlButton>
-                <ControlButton onClick={moveForward}>Move Forward</ControlButton>
-                <ControlButton onClick={() => rotate(CommandType.RotateRight)}>Rotate Right</ControlButton>
+                <ControlButton onClick={() => controlRover(CommandType.RotateLeft)}>Rotate Left</ControlButton>
+                <ControlButton onClick={() => controlRover(CommandType.Move)}>Move Forward</ControlButton>
+                <ControlButton onClick={() => controlRover(CommandType.RotateRight)}>Rotate Right</ControlButton>
             </div>
         </div>
     );
